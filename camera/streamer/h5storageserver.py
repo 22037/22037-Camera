@@ -125,10 +125,10 @@ if __name__ == '__main__':
 
     while(cv2.getWindowProperty("HDF5", 0) >= 0):
     
-    stop = False
+        stop = False
     while(not stop):
         current_time = time.time()
-
+    
         while not hdf5.log.empty():
             (level, msg) = hdf5.log.get_nowait()
             logger.log(level, "HDF5:{}".format(msg))
