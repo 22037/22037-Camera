@@ -27,7 +27,7 @@ def _poly1(M, *args):
 def poly2(x,y,x0,y0,a0,a1,a2,a3,a4,a5):
     x_c = x - x0
     y_c = y - y0
-    return a0+ a1*(x_c) + a2*y_c + a3*x_c^2 + a4 * x_c * y_c + a5 * y_c^2
+    return a0+ a1*(x_c) + a2*y_c + a3*x_c**2 + a4 * x_c * y_c + a5 * y_c**2
 def _poly2(M, *args):
     x, y = M
     arr = np.zeros(x.shape)
@@ -74,6 +74,7 @@ def _gaussian(M, *args):
     return arr
 # The function to be fit is the white image.
 # You need to load the image from disk
+#change this line depending on what image you want to look at
 Z = plt.imread("2-25teflon-02252022141303-11.tiff")
 print (Z.shape)
 # Initial guesses to the fit parameters.
@@ -110,7 +111,7 @@ rms = np.sqrt(np.mean((Z - fit)**2))
 print('RMS residual =', rms)
 # Plot the 3D figure of the fitted function and the residuals.
 fig = plt.figure()
-ax = fig.gca(projection='3d')
+ax = plt.subplot(projection='3d')
 ax.plot_surface(X, Y, fit, cmap='plasma')
 cset = ax.contourf(X, Y, Z-fit, zdir='z', offset=-4, cmap='plasma')
 ax.set_zlim(-4,np.max(fit))
@@ -141,7 +142,7 @@ rms = np.sqrt(np.mean((Z - fit)**2))
 print('RMS residual =', rms)
 # Plot the 3D figure of the fitted function and the residuals.
 fig = plt.figure()
-ax = fig.gca(projection='3d')
+ax = plt.subplot(projection='3d')
 ax.plot_surface(X, Y, fit, cmap='plasma')
 cset = ax.contourf(X, Y, Z-fit, zdir='z', offset=-4, cmap='plasma')
 ax.set_zlim(-4,np.max(fit))
@@ -149,7 +150,7 @@ plt.show()
 # Plot the test data as a 2D image and the fit as overlaid contours.
 fig = plt.figure()
 ax = fig.add_subplot(111)
-ax.imshow(Z, origin='bottom', cmap='plasma',
+ax.imshow(Z, origin='lower', cmap='plasma',
           extent=(x.min(), x.max(), y.min(), y.max()))
 ax.contour(X, Y, fit, colors='w')
 plt.show()
