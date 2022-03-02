@@ -75,7 +75,7 @@ def _gaussian(M, *args):
 # The function to be fit is the white image.
 # You need to load the image from disk
 #change this line depending on what image you want to look at
-Z = plt.imread("21722hand3-02172022172814-22.tiff")
+Z = plt.imread("2-25teflon-02252022141303-11.tiff")
 #print (Z.shape)
 # Initial guesses to the fit parameters.
 #Gaussian Guess for 4 Guassian Cuves
