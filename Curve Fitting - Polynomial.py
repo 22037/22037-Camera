@@ -75,7 +75,7 @@ def _gaussian(M, *args):
 # The function to be fit is the white image.
 # You need to load the image from disk
 #change this line depending on what image you want to look at
-Z = plt.imread("BS3-3-C13-BKGND.tiff")
+Z = plt.imread("BS3-3-C1-460.tiff")
 #print (Z.shape)
 # Initial guesses to the fit parameters.
 #Gaussian Guess for 4 Guassian Cuves
@@ -86,10 +86,10 @@ Z = plt.imread("BS3-3-C13-BKGND.tiff")
                 ] """
 # Polynominal Guesses for 1st to 4th order
 #             x0      y0      a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14
-poly1_prms = [740//2, 580//2, 1,  1,  1,  1]
-poly2_prms = [740//2, 580//2, 1,  1,  1,  1,  1,  1]
-poly3_prms = [740//2, 580//2, 1,  1,  1,  1,  1,  1,  1,  1,  1,  1]
-poly4_prms = [740//2, 580//2, 1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,   1,   1,   1,   1]
+poly1_prms = [720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
+poly2_prms = [720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
+poly3_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
+poly4_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
 #########################
 # Fitting Guassian Curves
 #########################
@@ -136,21 +136,22 @@ xdata = np.vstack((X.ravel(), Y.ravel()))
 # flattened (ravelled) ordering of the data points.
 popt, pcov = curve_fit(_poly2, xdata, Z.ravel(), p0)
 fit = poly2(X, Y, *popt[0:8])
+data_error = Z-fit
 print('Fitted parameters:')
 print(popt)
-rms = np.sqrt(np.mean((Z - fit)**2))
+rms = np.sqrt(np.mean((data_error)**2))
 print('RMS residual =', rms)
 # Plot the 3D figure of the fitted function and the residuals.
 fig = plt.figure()
 ax = plt.subplot(projection='3d')
 ax.plot_surface(X, Y, fit, cmap='plasma')
-cset = ax.contourf(X, Y, Z-fit, zdir='z', offset=-4, cmap='plasma')
+cset = ax.contourf(X, Y, 1000000000*data_error, zdir='z', offset=-4, cmap='plasma')
 ax.set_zlim(-4,np.max(fit))
 plt.show()
 # Plot the test data as a 2D image and the fit as overlaid contours.
-fig = plt.figure()
+""" fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.imshow(Z, origin='lower', cmap='plasma',
           extent=(x.min(), x.max(), y.min(), y.max()))
 ax.contour(X, Y, fit, colors='w')
-plt.show()
+plt.show() """
