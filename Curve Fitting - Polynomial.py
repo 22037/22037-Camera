@@ -14,6 +14,7 @@ ymax = height-1
 ny =  ymax-ymin+1
 x, y = np.linspace(xmin, xmax, nx), np.linspace(ymin, ymax, ny)
 X, Y = np.meshgrid(x, y)
+Z = 0
 # Our function to fit is going to be a sum of two-dimensional Gaussians
 def poly1(x,y,x0,y0,a0,a1,a2):
     x_c = x - x0
@@ -47,8 +48,8 @@ def _poly3(M, *args):
 def poly4(x,y,x0,y0,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14):
     x_c = x - x0
     y_c = y - y0
-    x_c_2 = x_c^2
-    y_c_2 = y_c^2
+    x_c_2 = x_c**2
+    y_c_2 = y_c**2
     x_c_3 = x_c_2*x_c
     y_c_3 = y_c_2*y_c
     x_c_4 = x_c_3*x_c
@@ -89,7 +90,7 @@ Z = plt.imread("BS3-3-C1-460.tiff")
 poly1_prms = [720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
 poly2_prms = [720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
 poly3_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
-poly4_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
+poly4_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2,720//2, 540//2, 720//2,  540//2,  720//2]
 #########################
 # Fitting Guassian Curves
 #########################
@@ -132,9 +133,10 @@ plt.show() """
 p0 = poly2_prms
 # We need to ravel the meshgrids of X, Y points to a pair of 1-D arrays.
 xdata = np.vstack((X.ravel(), Y.ravel()))
+ydata = Z.ravel()
 # Do the fit, using our custom _gaussian function which understands our
 # flattened (ravelled) ordering of the data points.
-popt, pcov = curve_fit(_poly2, xdata, Z.ravel(), p0)
+popt, pcov = curve_fit(_poly2, xdata, ydata, p0)
 fit = poly2(X, Y, *popt[0:8])
 data_error = Z-fit
 print('Fitted parameters:')
