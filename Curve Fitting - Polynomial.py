@@ -37,9 +37,9 @@ def _poly2(M, *args):
 def poly3(x,y,x0,y0,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9):
     x_c = x - x0
     y_c = y - y0
-    x_c_2 = x_c^2
-    y_c_2 = y_c^2
-    return a0+ a1*(x_c) + a2*y_c + a3*x_c_2 + a4 * x_c * y_c + a5 * y_c_2 + a6*x_c^3 + a7 *x_c_2 * y_c + a8* x_c*y_c_2 + a9 * y_c^3
+    x_c_2 = x_c**2
+    y_c_2 = y_c**2
+    return a0+ a1*(x_c) + a2*y_c + a3*x_c_2 + a4 * x_c * y_c + a5 * y_c_2 + a6*x_c**3 + a7 *x_c_2 * y_c + a8* x_c*y_c_2 + a9 * y_c**3
 def _poly3(M, *args):
     x, y = M
     arr = np.zeros(x.shape)
@@ -76,7 +76,7 @@ def _gaussian(M, *args):
 # The function to be fit is the white image.
 # You need to load the image from disk
 #change this line depending on what image you want to look at
-Z = plt.imread("BS3-3-C1-460.tiff")
+Z = plt.imread("BS3-3-C2-525.tiff")
 #print (Z.shape)
 # Initial guesses to the fit parameters.
 #Gaussian Guess for 4 Guassian Cuves
@@ -89,8 +89,8 @@ Z = plt.imread("BS3-3-C1-460.tiff")
 #             x0      y0      a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14
 poly1_prms = [720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
 poly2_prms = [720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
-poly3_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
-poly4_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2,720//2, 540//2, 720//2,  540//2,  720//2]
+poly3_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2, 720//2,  540//2]
+poly4_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2, 720//2, 540//2, 720//2,  540//2,  720//2]
 #########################
 # Fitting Guassian Curves
 #########################
@@ -147,7 +147,7 @@ print('RMS residual =', rms)
 fig = plt.figure()
 ax = plt.subplot(projection='3d')
 ax.plot_surface(X, Y, fit, cmap='plasma')
-cset = ax.contourf(X, Y, 1000000000*data_error, zdir='z', offset=-4, cmap='plasma')
+cset = ax.contourf(X, Y, 1000000000000*data_error, zdir='z', offset=-4, cmap='plasma')
 ax.set_zlim(-4,np.max(fit))
 plt.show()
 # Plot the test data as a 2D image and the fit as overlaid contours.
