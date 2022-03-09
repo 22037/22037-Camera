@@ -76,7 +76,7 @@ def _gaussian(M, *args):
 # The function to be fit is the white image.
 # You need to load the image from disk
 #change this line depending on what image you want to look at
-Z = plt.imread("BS3-3-C2-525.tiff")
+Z = plt.imread("BS3-3-C3-590.tiff")
 #print (Z.shape)
 # Initial guesses to the fit parameters.
 #Gaussian Guess for 4 Guassian Cuves
@@ -89,6 +89,7 @@ Z = plt.imread("BS3-3-C2-525.tiff")
 #             x0      y0      a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14
 poly1_prms = [720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
 poly2_prms = [720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
+#poly2_prms = [720//2, 540//2, 1, 1, 1, 1,  1, 1]
 poly3_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2, 720//2,  540//2]
 poly4_prms = [720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2, 720//2, 540//2, 720//2,  540//2,  720//2]
 #########################

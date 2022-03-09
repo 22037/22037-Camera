@@ -75,14 +75,18 @@ def _gaussian(M, *args):
 # The function to be fit is the white image.
 # You need to load the image from disk
 #change this line depending on what image you want to look at
-Z = plt.imread("BS3-3-C12-420.tiff")
+Z = plt.imread("BS3-3-C3-590.tiff")
 #print (Z.shape)
 # Initial guesses to the fit parameters.
 #Gaussian Guess for 4 Guassian Cuves
-gaussian_prms = [(   0,  0, 1, 1, 2),
+""" gaussian_prms = [(   0,  0, 1, 1, 2),
                  (-1.5,  5, 5, 1, 3),
                  (  -4, -1, 1.5, 1.5, 6),
                  (   4,  1, 1.5, 1.5, 6.5)
+                ] """
+gaussian_prms = [(720//2, 540//2, 720//2,  540//2, 720//2),
+                 (540//2, 720//2,  540//2, 720//2, 540//2),
+                 (720//4, 540//4, 720//4,  540//4, 720//4)
                 ]
 # Polynominal Guesses for 1st to 4th order
 #             x0      y0      a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14
@@ -103,6 +107,7 @@ ydata = Z.ravel()
 # flattened (ravelled) ordering of the data points.
 popt, pcov = curve_fit(_gaussian, xdata, ydata, p0)
 fit = np.zeros(Z.shape)
+data_error = Z-fit
 for i in range(len(popt)//5):
     fit += gaussian(X, Y, *popt[i*5:i*5+5])
 print('Fitted parameters:')
