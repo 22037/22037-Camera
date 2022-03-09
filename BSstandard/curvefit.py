@@ -69,7 +69,7 @@ y_C9 = C9.ravel()
 y_C10 = C10.ravel()
 #y_C11 = C11.ravel()
 y_C12 = C12.ravel()
-y_C13 = C13.ravel()
+#y_C13 = C13.ravel()
 
 # Do the fit, using our custom _poly2 function which understands our
 # flattened (ravelled) ordering of the data points.
@@ -86,7 +86,7 @@ popt9, pcov9 = curve_fit(_poly2, xdata, y_C9, p0)
 popt10, pcov10 = curve_fit(_poly2, xdata, y_C10, p0)
 #popt11, pcov11 = curve_fit(_poly2, xdata, y_C11, p0)
 popt12, pcov12 = curve_fit(_poly2, xdata, y_C12, p0)
-popt13, pcov13 = curve_fit(_poly2, xdata, y_C13, p0)
+#popt13, pcov13 = curve_fit(_poly2, xdata, y_C13, p0)
 
 fit0 = poly2(X, Y, *popt0[0:8])
 fit1 = poly2(X, Y, *popt1[0:8])
@@ -101,7 +101,7 @@ fit9 = poly2(X, Y, *popt9[0:8])
 fit10 = poly2(X, Y, *popt10[0:8])
 #fit11 = poly2(X, Y, *popt11[0:8])
 fit12 = poly2(X, Y, *popt12[0:8])
-fit13 = poly2(X, Y, *popt13[0:8])
+#fit13 = poly2(X, Y, *popt13[0:8])
 
 error0 = C0-fit0
 error1 = C1-fit1
@@ -116,6 +116,4 @@ error9 = C9-fit9
 error10 = C10-fit10
 #error11 = C11-fit11
 error12 = C12-fit12
-error13 = C13-fit13
-
-print(error0)
+#error13 = C13-fit13
