@@ -117,3 +117,5 @@ error10 = C10-fit10
 #error11 = C11-fit11
 error12 = C12-fit12
 #error13 = C13-fit13
+
+print(error0)

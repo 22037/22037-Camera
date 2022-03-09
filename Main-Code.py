@@ -17,6 +17,7 @@ from timeit import default_timer as timer
 from queue import Queue
 from examples.configs.blackfly_configs  import configs
 from numba import vectorize
+import matplotlib.pyplot as plt
 from BSstandard import curvefit
  
 if configs['displayfps'] >= configs['fps']:
@@ -37,7 +38,7 @@ camera_index = 0 # default camera starts at 0 by operating system
 looptime = 0.0
 use_queue = True
 data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
-background = curvefit.C13
+background = plt.imread("C13-BKGND.tiff")
 flatfield = np.cast['uint16'](2**8.*np.random.random((540,720)))
 data_cube_corr = np.zeros((14, 540, 720), 'uint16')
 frame = np.zeros((540,720), dtype=np.uint8)
