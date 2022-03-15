@@ -118,4 +118,4 @@ error10 = C10-fit10
 error12 = C12-fit12
 #error13 = C13-fit13
 
-print(error0)
+#print(error0)
