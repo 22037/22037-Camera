@@ -120,6 +120,37 @@ fit10_2 = fit10//168.84978148856877
 fit12_2 = fit12//180.38864295078793
 fit13_2 = fit13//1.002423756910867
 
+#read fits/background into text files
+np.savetxt('background', C13, delimiter=",")
+
+np.savetxt('fit0', fit0, delimiter=",")
+np.savetxt('fit1', fit1, delimiter=",")
+np.savetxt('fit2', fit2, delimiter=",")
+np.savetxt('fit3', fit3, delimiter=",")
+np.savetxt('fit4', fit4, delimiter=",")
+np.savetxt('fit5', fit5, delimiter=",")
+np.savetxt('fit6', fit6, delimiter=",")
+np.savetxt('fit7', fit7, delimiter=",")
+np.savetxt('fit8', fit8, delimiter=",")
+np.savetxt('fit9', fit9, delimiter=",")
+np.savetxt('fit10', fit10, delimiter=",")
+np.savetxt('fit12', fit12, delimiter=",")
+np.savetxt('fit13', fit13, delimiter=",")
+
+np.savetxt('fit0_2', fit0_2, delimiter=",")
+np.savetxt('fit1_2', fit1_2, delimiter=",")
+np.savetxt('fit2_2', fit2_2, delimiter=",")
+np.savetxt('fit3_2', fit3_2, delimiter=",")
+np.savetxt('fit4_2', fit4_2, delimiter=",")
+np.savetxt('fit5_2', fit5_2, delimiter=",")
+np.savetxt('fit6_2', fit6_2, delimiter=",")
+np.savetxt('fit7_2', fit7_2, delimiter=",")
+np.savetxt('fit8_2', fit8_2, delimiter=",")
+np.savetxt('fit9_2', fit9_2, delimiter=",")
+np.savetxt('fit10_2', fit10_2, delimiter=",")
+np.savetxt('fit12_2', fit12_2, delimiter=",")
+np.savetxt('fit13_2', fit13_2, delimiter=",")
+
 ####### error of curve fits
 error0 = C0-fit0
 #error1 = C1-fit1
