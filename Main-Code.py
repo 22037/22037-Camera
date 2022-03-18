@@ -130,8 +130,6 @@ proc_time              = 0
 def correction(background, flatfield, data_cube):
     return np.multiply(np.subtract(data_cube,background),flatfield)
 
-
-
 # Main Loop
 stop = False
 while(not stop):
