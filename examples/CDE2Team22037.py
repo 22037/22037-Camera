@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import time
 
 cap = cv2.VideoCapture(0)
 
@@ -10,7 +11,8 @@ def rebin(arr, new_shape):
 
 
 while True: 
-    
+    current_time = time.time()
+
     ret,img=cap.read()
     # dimensions = img.shape
     # print(dimensions)
