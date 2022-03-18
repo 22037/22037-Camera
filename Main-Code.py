@@ -158,7 +158,6 @@ while(not stop):
             pass
             # logger.log(logging.WARNING, "HDF5:Storage Queue is full!")
  
-    # Display performance in main loop
 # Display performance in main loop
     if current_time - last_time >= measure_time:
         # how much time did it take to process the data
