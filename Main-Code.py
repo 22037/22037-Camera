@@ -73,10 +73,8 @@ looptime = 0.0
 use_queue = True
 data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
 #background = plt.imread("C13-BKGND.tiff")
-#flatfield=fit0
 flatfield = [fit0, fit1, fit2, fit3, fit4, fit5, fit6, fit7, fit8, fit9, fit10, fit11, fit12, fit13]
-#flatfield = fit0*fit1*fit2*fit3*fit4*fit5*fit6*fit7*fit8*fit9*fit10*fit12
-#flatfield_2 = fit0_2*fit1_2*fit2_2*fit3_2*fit4_2*fit5_2*fit6_2*fit7_2*fit8_2*fit9_2*fit10_2*fit12_2
+#flatfield = [fit0_2, fit1_2, fit2_2, fit3_2, fit4_2, fit5_2, fit6_2, fit7_2, fit8_2, fit9_2, fit10_2, fit11_2, fit12_2, fit13_2]
 #flatfield = np.cast['uint8'](2**8.*np.random.random((540,720)))
 data_cube_corr = np.zeros((14, 540, 720), 'uint16')
 frame = np.zeros((540,720), dtype=np.uint8)
