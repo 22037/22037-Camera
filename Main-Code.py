@@ -18,7 +18,6 @@ from queue import Queue
 from examples.configs.blackfly_configs  import configs
 from numba import vectorize
 import matplotlib.pyplot as plt
-from BSstandard import curvefit
  
 if configs['displayfps'] >= configs['fps']:
     display_interval = 0
@@ -34,12 +33,45 @@ width = res[0]
 measure_time = 5.0 # average measurements over 5 secs
 camera_index = 0 # default camera starts at 0 by operating system
 
+#read in curvefit files
+background=np.loadtxt('background', dtype='uint8', delimiter=',')
+
+fit0=np.loadtxt('fit0', dtype='float64', delimiter=',')
+fit1=np.loadtxt('fit1', dtype='float64', delimiter=',')
+fit2=np.loadtxt('fit2', dtype='float64', delimiter=',')
+fit3=np.loadtxt('fit3', dtype='float64', delimiter=',')
+fit4=np.loadtxt('fit4', dtype='float64', delimiter=',')
+fit5=np.loadtxt('fit5', dtype='float64', delimiter=',')
+fit6=np.loadtxt('fit6', dtype='float64', delimiter=',')
+fit7=np.loadtxt('fit7', dtype='float64', delimiter=',')
+fit8=np.loadtxt('fit8', dtype='float64', delimiter=',')
+fit9=np.loadtxt('fit9', dtype='float64', delimiter=',')
+fit10=np.loadtxt('fit10', dtype='float64', delimiter=',')
+fit12=np.loadtxt('fit12', dtype='float64', delimiter=',')
+#fit13=np.loadtxt('fit13', dtype='float64', delimiter=',')
+
+fit0_2=np.loadtxt('fit0_2', dtype='float64', delimiter=',')
+fit1_2=np.loadtxt('fit1_2', dtype='float64', delimiter=',')
+fit2_2=np.loadtxt('fit2_2', dtype='float64', delimiter=',')
+fit3_2=np.loadtxt('fit3_2', dtype='float64', delimiter=',')
+fit4_2=np.loadtxt('fit4_2', dtype='float64', delimiter=',')
+fit5_2=np.loadtxt('fit5_2', dtype='float64', delimiter=',')
+fit6_2=np.loadtxt('fit6_2', dtype='float64', delimiter=',')
+fit7_2=np.loadtxt('fit7_2', dtype='float64', delimiter=',')
+fit8_2=np.loadtxt('fit8_2', dtype='float64', delimiter=',')
+fit9_2=np.loadtxt('fit9_2', dtype='float64', delimiter=',')
+fit10_2=np.loadtxt('fit10_2', dtype='float64', delimiter=',')
+fit12_2=np.loadtxt('fit12_2', dtype='float64', delimiter=',')
+#fit13_2=np.loadtxt('fit13_2', dtype='float64', delimiter=',')
+
 #Processing
 looptime = 0.0
 use_queue = True
 data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
-background = plt.imread("C13-BKGND.tiff")
-flatfield = np.cast['uint16'](2**8.*np.random.random((540,720)))
+#background = plt.imread("C13-BKGND.tiff")
+flatfield = fit0*fit1*fit2*fit3*fit4*fit5*fit6*fit7*fit8*fit9*fit10*fit12
+#flatfield_2 = fit0_2*fit1_2*fit2_2*fit3_2*fit4_2*fit5_2*fit6_2*fit7_2*fit8_2*fit9_2*fit10_2*fit12_2
+#flatfield = np.cast['uint16'](2**8.*np.random.random((540,720)))
 data_cube_corr = np.zeros((14, 540, 720), 'uint16')
 frame = np.zeros((540,720), dtype=np.uint8)
  
