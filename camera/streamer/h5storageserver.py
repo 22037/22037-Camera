@@ -125,26 +125,26 @@ if __name__ == '__main__':
 
     while(cv2.getWindowProperty("HDF5", 0) >= 0):
     
-    stop = False
-    while(not stop):
-        current_time = time.time()
+        stop = False
+        while(not stop):
+            current_time = time.time()
 
-        while not hdf5.log.empty():
-            (level, msg) = hdf5.log.get_nowait()
-            logger.log(level, "HDF5:{}".format(msg))
+            while not hdf5.log.empty():
+                (level, msg) = hdf5.log.get_nowait()
+                logger.log(level, "HDF5:{}".format(msg))
 
-        if (current_time - last_display) > display_interval:
-            frame = cube[0,:,:].copy() 
-            cv2.putText(frame,"Frame:{}".format(num_frame), textLocation, font, fontScale, fontColor, lineType)
-            cv2.imshow('HDF5', frame)
-            num_frame += 1
-            last_display = current_time
+            if (current_time - last_display) > display_interval:
+                frame = cube[0,:,:].copy() 
+                cv2.putText(frame,"Frame:{}".format(num_frame), textLocation, font, fontScale, fontColor, lineType)
+                cv2.imshow('HDF5', frame)
+                num_frame += 1
+                last_display = current_time
 
-            key = cv2.waitKey(1) 
-            if (key == 27) or (key & 0xFF == ord('q')): stop = True
-            if cv2.getWindowProperty("HDF5", 0) < 0: stop = True
+                key = cv2.waitKey(1) 
+                if (key == 27) or (key & 0xFF == ord('q')): stop = True
+                if cv2.getWindowProperty("HDF5", 0) < 0: stop = True
 
-            if not hdf5.queue.full(): hdf5.queue.put_nowait((current_time, cube))
+                if not hdf5.queue.full(): hdf5.queue.put_nowait((current_time, cube))
 
     hdf5.stop()
     cv2.destroyAllWindows()
