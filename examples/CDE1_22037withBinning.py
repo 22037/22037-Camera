@@ -103,14 +103,14 @@ bin_y=20
 scale = (bin_x*bin_y*255)
 
 @jit(nopython=True, fastmath=True, parallel=True)
-def bin5_sum8(arr_in):
+def bin10_sum8(arr_in):
     m,n,o   = np.shape(arr_in)
-    arr_tmp = np.empty((m//5,n,o), dtype='uint16')
-    arr_out = np.empty((m//5,n//5,o), dtype='uint16')
-    for i in prange(m//5):
-        arr_tmp[i,:,:] =  arr_in[i*5,:,:] +  arr_in[i*5+1,:,:] +  arr_in[i*5+2,:,:] +  arr_in[i*5+3,:,:] +  arr_in[i*5+4,:,:]
-    for j in prange(n//5):
-        arr_out[:,j,:] = arr_tmp[:,j*5,:] + arr_tmp[:,j*5+1,:] + arr_tmp[:,j*5+2,:] + arr_tmp[:,j*5+3,:] + arr_tmp[:,j*5+4,:]
+    arr_tmp = np.empty((m//10,n,o), dtype='uint16')
+    arr_out = np.empty((m//10,n//10,o), dtype='uint16')
+    for i in prange(m//10):
+        arr_tmp[i,:,:] =  arr_in[i*10,:,:] +  arr_in[i*10+1,:,:] +  arr_in[i*10+2,:,:] +  arr_in[i*10+3,:,:] +  arr_in[i*10+4,:,:] +  arr_in[i*10+5,:,:] +  arr_in[i*10+6,:,:] +  arr_in[i*10+7,:,:] +  arr_in[i*10+8,:,:] +  arr_in[i*10+9,:,:]
+    for j in prange(n//10):
+        arr_out[:,j,:] = arr_tmp[:,j*10,:] + arr_tmp[:,j*10+1,:] + arr_tmp[:,j*10+2,:] + arr_tmp[:,j*10+3,:] + arr_tmp[:,j*10+4,:] + arr_tmp[:,j*10+5,:] + arr_tmp[:,j*10+6,:] + arr_tmp[:,j*10+7,:] + arr_tmp[:,j*10+8,:] + arr_tmp[:,j*10+9,:]
     return arr_out
 
 @vectorize(['uint16(uint8, uint16, uint8)'], nopython = True, fastmath = True)
@@ -181,7 +181,7 @@ while(not stop):
 
     #Begin binning for blood quantification
     start_time  = time.perf_counter()
-    frame_bin   = bin5_sum8(frame)
+    frame_bin   = bin10_sum8(frame)
     bin_time   += (time.perf_counter() - start_time)
 
     frame_ratio = (frame_bin[:,:,1].astype(np.float32)/frame_bin[:,:,2].astype(np.float32)*255.0).astype(np.uint16)
