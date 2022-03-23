@@ -37,36 +37,21 @@ camera_index = 0 # default camera starts at 0 by operating system
 background=np.loadtxt('background', dtype='uint8', delimiter=',')
 
 #images are stored in BSstandard folder
-fit0=np.loadtxt('fit0', dtype='uint8', delimiter=',')
-fit1=np.loadtxt('fit1', dtype='uint8', delimiter=',')
-fit2=np.loadtxt('fit2', dtype='uint8', delimiter=',')
-fit3=np.loadtxt('fit3', dtype='uint8', delimiter=',')
-fit4=np.loadtxt('fit4', dtype='uint8', delimiter=',')
-fit5=np.loadtxt('fit5', dtype='uint8', delimiter=',')
-fit6=np.loadtxt('fit6', dtype='uint8', delimiter=',')
-fit7=np.loadtxt('fit7', dtype='uint8', delimiter=',')
-fit8=np.loadtxt('fit8', dtype='uint8', delimiter=',')
-fit9=np.loadtxt('fit9', dtype='uint8', delimiter=',')
-fit10=np.loadtxt('fit10', dtype='uint8', delimiter=',')
+fit0=np.loadtxt('fit0_2', dtype='float32', delimiter=',')
+fit1=np.loadtxt('fit1_2', dtype='float32', delimiter=',')
+fit2=np.loadtxt('fit2_2', dtype='float32', delimiter=',')
+fit3=np.loadtxt('fit3_2', dtype='float32', delimiter=',')
+fit4=np.loadtxt('fit4_2', dtype='float32', delimiter=',')
+fit5=np.loadtxt('fit5_2', dtype='float32', delimiter=',')
+fit6=np.loadtxt('fit6_2', dtype='float32', delimiter=',')
+fit7=np.loadtxt('fit7_2', dtype='float32', delimiter=',')
+fit8=np.loadtxt('fit8_2', dtype='float32', delimiter=',')
+fit9=np.loadtxt('fit9_2', dtype='float32', delimiter=',')
+fit10=np.loadtxt('fit10_2', dtype='float32', delimiter=',')
 #comment out 11 and 13
-fit11=np.loadtxt('fit12', dtype='uint8', delimiter=',')
-fit12=np.loadtxt('fit12', dtype='uint8', delimiter=',')
-fit13=np.loadtxt('background', dtype='uint8', delimiter=',')
-
-""" 
-fit0_2=np.loadtxt('fit0_2', dtype='float64', delimiter=',')
-fit1_2=np.loadtxt('fit1_2', dtype='float64', delimiter=',')
-fit2_2=np.loadtxt('fit2_2', dtype='float64', delimiter=',')
-fit3_2=np.loadtxt('fit3_2', dtype='float64', delimiter=',')
-fit4_2=np.loadtxt('fit4_2', dtype='float64', delimiter=',')
-fit5_2=np.loadtxt('fit5_2', dtype='float64', delimiter=',')
-fit6_2=np.loadtxt('fit6_2', dtype='float64', delimiter=',')
-fit7_2=np.loadtxt('fit7_2', dtype='float64', delimiter=',')
-fit8_2=np.loadtxt('fit8_2', dtype='float64', delimiter=',')
-fit9_2=np.loadtxt('fit9_2', dtype='float64', delimiter=',')
-fit10_2=np.loadtxt('fit10_2', dtype='float64', delimiter=',')
-fit12_2=np.loadtxt('fit12_2', dtype='float64', delimiter=',') """
-#fit13_2=np.loadtxt('fit13_2', dtype='float64', delimiter=',')
+fit11=np.loadtxt('fit12_2', dtype='float32', delimiter=',')
+fit12=np.loadtxt('fit12_2', dtype='float32', delimiter=',')
+fit13=np.loadtxt('background', dtype='float32', delimiter=',')
 
 #Processing
 looptime = 0.0
@@ -124,7 +109,7 @@ num_frames_displayed   = 0  # keep trakc of how many frames are displayed
 measured_dps           = 0  # computed in main thread, number of frames displayed per second
 proc_time              = 0 
  
-@vectorize(['uint16(uint8, uint16, uint8)'], nopython = True, fastmath = True)
+@vectorize(['uint16(uint8, float32, uint8)'], nopython = True, fastmath = True)
 def correction(background, flatfield, data_cube):
     return np.multiply(np.subtract(data_cube,background),flatfield)
 
