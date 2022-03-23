@@ -105,25 +105,25 @@ fit12 = poly2(X, Y, *popt12[0:8])
 fit13 = poly2(X, Y, *popt13[0:8])
 
 ####### curve fits divided by maximum value to generate matrix from 0 to 1
-fit0_2 = fit0//149.92073436516486
-fit1_2 = fit1//175.07706588726052
-fit2_2 = fit2//171.31791951751893
-fit3_2 = fit3//194.02921321295688
-fit4_2 = fit4//173.93473692596248
-fit5_2 = fit5//171.04719699151363
-fit6_2 = fit6//174.08845880761018
-fit7_2 = fit7//174.73981273782246
-fit8_2 = fit8//183.07360537538898
-fit9_2 = fit9//54.62150057527463
-fit10_2 = fit10//168.84978148856877
-#fit11_2 = fit11//
-fit12_2 = fit12//180.38864295078793
-fit13_2 = fit13//1.002423756910867
+fit0_2 = fit0/255.
+fit1_2 = fit1/255.
+fit2_2 = fit2/255.
+fit3_2 = fit3/255.
+fit4_2 = fit4/255.
+fit5_2 = fit5/255.
+fit6_2 = fit6/255.
+fit7_2 = fit7/255.
+fit8_2 = fit8/255.
+fit9_2 = fit9/255.
+fit10_2 = fit10/255.
+#fit11_2 = fit11/255.
+fit12_2 = fit12/255.
+fit13_2 = fit13/255.
 
 #read fits/background into text files
 np.savetxt('background', C13, delimiter=",")
 
-np.savetxt('fit0', fit0, delimiter=",")
+""" np.savetxt('fit0', fit0, delimiter=",")
 np.savetxt('fit1', fit1, delimiter=",")
 np.savetxt('fit2', fit2, delimiter=",")
 np.savetxt('fit3', fit3, delimiter=",")
@@ -135,7 +135,7 @@ np.savetxt('fit8', fit8, delimiter=",")
 np.savetxt('fit9', fit9, delimiter=",")
 np.savetxt('fit10', fit10, delimiter=",")
 np.savetxt('fit12', fit12, delimiter=",")
-np.savetxt('fit13', fit13, delimiter=",")
+np.savetxt('fit13', fit13, delimiter=",") """
 
 np.savetxt('fit0_2', fit0_2, delimiter=",")
 np.savetxt('fit1_2', fit1_2, delimiter=",")
