@@ -8,18 +8,17 @@ import time
 # Optical constants are given in the units of cm^-1 (dependent on the wavelength)
 # h_blood_const =
 w_const = 2.79*10**(-3)
-# m_const = 
-# f_const = 
-# mu_a =
-# mu_s =
+m_const = 
+f_const = 
+mu_a =
+mu_s =
+h_blood = 
 wavelength1 = 540
 wavelength2 = 680
-# h_blood = 
 I_white1 = np.random(720,540)
 I_white2 = np.random(720,540)
 b1_w1 = 50
 b2_w2 = 25
-g1 = b1_w1/b2_w2
 g1 = b1_w1/b2_w2
 R_lambda_1 = I_white1 * ((h_blood)*b1_w1 + b2_w2)
 R_lambda_2 = I_white2 * ((h_blood)*b1_w1 + b2_w2)
