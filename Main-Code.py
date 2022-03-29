@@ -57,7 +57,7 @@ fit13=np.loadtxt('background', dtype='float32', delimiter=',')
 looptime = 0.0
 use_queue = True
 data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
-background = np.zeros((540, 720), dtype=np.unit8)
+background = np.zeros((540, 720), dtype=np.uint8)
 #background = plt.imread("C13-BKGND.tiff")
 flatfield = [fit0, fit1, fit2, fit3, fit4, fit5, fit6, fit7, fit8, fit9, fit10, fit11, fit12, fit13]
 #flatfield = [fit0_2, fit1_2, fit2_2, fit3_2, fit4_2, fit5_2, fit6_2, fit7_2, fit8_2, fit9_2, fit10_2, fit11_2, fit12_2, fit13_2]
@@ -67,10 +67,10 @@ frame = np.zeros((540,720), dtype=np.uint8)
 
 #NEW - FIND BACKGROUND
 inten = np.zeros(res[0], 'uint16')
+#bg    = np.zeros((res[1],res[2]), 'uint8')
 bg_delta = np.zeros((64,64), dtype=np.float32)
 bg_dx = bg_delta[1]
 bg_dy = bg_delta[0]
-bg    = np.zeros((res[1],res[2]), 'uint8')
 
 #Camera configuration file
 #from configs.blackfly_configs  import configs
@@ -134,7 +134,10 @@ while(not stop):
     #NEW - FIND BACKGROUND
     bg_sum = np.sum(data_cube[:,::bg_dx,::bg_dy], axis=(1,2), out = inten)
     background_indx = np.argmin(inten) # search for minimum intensity 
-    background = data_cube[background_indx, :, :]
+    back1 = data_cube[:background_indx]
+    back2 = data_cube[background_indx:]
+    data_cube = [*back1, *back2]
+    #background = data_cube[background_indx, :, :]
 
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
