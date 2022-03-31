@@ -67,8 +67,8 @@ frame = np.zeros((540,720), dtype=np.uint8)
 
 #NEW - FIND BACKGROUND
 inten = np.zeros(res[0], 'uint16')
-#bg    = np.zeros((res[1],res[2]), 'uint8')
-bg_delta = np.zeros((64,64), dtype=np.float32)
+#bg_delta: (int, int) = (64, 64)
+bg_delta = np.zeros((64,64), dtype=np.uint64)
 bg_dx = bg_delta[1]
 bg_dy = bg_delta[0]
 
@@ -134,10 +134,12 @@ while(not stop):
     #NEW - FIND BACKGROUND
     bg_sum = np.sum(data_cube[:,::bg_dx,::bg_dy], axis=(1,2), out = inten)
     background_indx = np.argmin(inten) # search for minimum intensity 
-    back1 = data_cube[:background_indx]
-    back2 = data_cube[background_indx:]
-    data_cube = [*back1, *back2]
-    #background = data_cube[background_indx, :, :]
+    background = data_cube[background_indx, :, :]
+
+    #b_1 = background_indx+1
+    #back1 = data_cube[:b_1]
+    #back2 = data_cube[b_1:]
+    #data_cube = [*back1, *back2]
 
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
