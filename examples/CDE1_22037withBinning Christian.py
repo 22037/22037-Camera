@@ -31,7 +31,7 @@ dps_measure_time = 5.0 # average measurements over 5 secs
 #configs
 res = configs['camera_res']
 height = res[1]
-width = res[0]
+width  = res[0]
 measure_time = 5.0 # average measurements over 5 secs
 camera_index = 0 # default camera starts at 0 by operating system
 
@@ -103,7 +103,6 @@ bin_y=20
 scale = (bin_x*bin_y*255)
 
 # Binning 20 pixels of the 8bit images
-@jit(nopython=True, fastmath=True, parallel=True)
 def bin20(arr_in):
     m,n,o   = np.shape(arr_in)
     arr_tmp = np.empty((m//20,n,o), dtype='uint16')
@@ -132,11 +131,11 @@ while(not stop):
  
     # wait for new image
     (frame_time, frame) = camera.capture.get(block=True, timeout=None)
-    data_cube[frame_idx,:,:] = frame
-    num_frames_received += 1
  
     data_cube_corr = correction(background,flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
+
+    num_frames_received += 1
     frame_idx += 1
     while not camera.log.empty():
         (level, msg)=camera.log.get_nowait()
@@ -146,6 +145,30 @@ while(not stop):
     if frame_idx >= 14: # 0...13 is populated
         frame_idx = 0
         num_cubes_generated += 1
+
+            # Begin Blood Quantification
+        start_time  = time.perf_counter()
+        frame_bin   = bin20(data_cube_corr)
+        # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
+        bin_time   += (time.perf_counter() - start_time)
+
+        frame_ratio = (frame_bin[:,:,1].astype(np.float32)/frame_bin[:,:,2].astype(np.float32)*255.0).astype(np.uint16)
+
+        # Display Binned Image, make it same size as original image
+        frame_bin_01 = frame_bin/scale # make image 0..1
+        frame_tmp = cv2.resize(frame_bin_01, (width,height), fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
+        cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
+        cv2.imshow(binned_window_name, frame_tmp)
+
+        # Display Ratio Image, make it same size as original image
+        frame_ratio_01 = (frame_ratio/255).astype(np.float32)
+        frame_ratio_01 = np.sqrt(frame_ratio_01)
+        min_fr = 0.95*min_fr + 0.05*frame_ratio_01.min()
+        max_fr = 0.95*max_fr + 0.05*frame_ratio_01.max()        
+        frame_ratio_01 = (frame_ratio_01 -min_fr)/(max_fr-min_fr)
+        frame_tmp = cv2.resize(frame_ratio_01, (width,height),fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
+        cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
+        cv2.imshow(ratioed_window_name, frame_tmp)
 
         # HDF5 
         try: 
@@ -181,61 +204,19 @@ while(not stop):
         cv2.putText(display_frame,"Capture FPS:{} [Hz]".format(camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
         cv2.putText(display_frame,"Display FPS:{} [Hz]".format(measured_dps),        textLocation1, font, fontScale, 255, lineType)
         cv2.imshow(window_name, display_frame)
+
+
+        if (current_time - last_time) >= 5.0: # framearray rate every 5 secs
+            logger.log(logging.INFO, "Bin:{}".format(bin_time/5.0))
+            bin_time = 0
+            last_time = current_time
+        
         # quit the program if users enter q or closes the display window
         if cv2.waitKey(1) & 0xFF == ord('q'): # this likely is the reason that display frame rate is not faster than 60fps.
             stop = True
         last_display = current_time
         num_frames_displayed += 1
-
-    #Begin binning for blood quantification
-    start_time  = time.perf_counter()
-    frame_bin   = bin20(frame)
-    bin_time   += (time.perf_counter() - start_time)
-
-    frame_ratio = (frame_bin[:,:,1].astype(np.float32)/frame_bin[:,:,2].astype(np.float32)*255.0).astype(np.uint16)
- 
-    #Display binned Images
-    if (current_time - last_display) >= display_interval:
-
-    #     # Display Camera Data
-    #     cv2.putText(frame,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
-    #     cv2.imshow(main_window_name, frame)
-
-    #     # Display Binned Image, make it same size as original image
-    #     frame_bin_01 = frame_bin/scale # make image 0..1
-    #     frame_tmp = cv2.resize(frame_bin_01, (width,height), fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
-    #     cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
-    #     cv2.imshow(binned_window_name, frame_tmp)
-
-    #     # Display Ratio Image, make it same size as original image
-    #     frame_ratio_01 = (frame_ratio/255).astype(np.float32)
-    #     frame_ratio_01 = np.sqrt(frame_ratio_01)
-    #     min_fr = 0.95*min_fr + 0.05*frame_ratio_01.min()
-    #     max_fr = 0.95*max_fr + 0.05*frame_ratio_01.max()        
-    #     frame_ratio_01 = (frame_ratio_01 -min_fr)/(max_fr-min_fr)
-    #     frame_tmp = cv2.resize(frame_ratio_01, (width,height),fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
-    #     cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
-    #     cv2.imshow(ratioed_window_name, frame_tmp)
-
-    #     # # Bandpasse Image, is difference between 0.5Hz and 10Hz
-    #     # data_bandpass   = data_lowpass_h - data_lowpass_l
-
-    #     # # transfrom bandpassed image to enhance small changes and to be in 0...1 range
-    #     # data_bandpass_tmp = displaytrans(data_bandpass)        
-    #     # data_bandpass_tmp = cv2.resize(data_bandpass_tmp, (width,height))
-    #     # # Display bandpassed image
-    #     # cv2.imshow(processed_window_name, data_bandpass_tmp)
-
-    #     if cv2.waitKey(1) & 0xFF == ord('q'): stop = True
-
-    #     last_display = current_time
-    #     counter += 1
-
-    # if (current_time - last_time) >= 5.0: # framearray rate every 5 secs
-    #     logger.log(logging.INFO, "Bin:{}".format(bin_time/5.0))
-    #     bin_time = 0
-    #     last_time = current_time
-        print("Images being binned in real time /n")
+        
 # Cleanup
 camera.stop()
 cv2.destroyAllWindows()
