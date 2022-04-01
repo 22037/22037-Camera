@@ -87,6 +87,7 @@ bg_delta: tuple = (64, 64)
 bg_dx = bg_delta[1]
 bg_dy = bg_delta[0]
 index_array = np.arange(0, 14)
+i=0
 
 #Camera configuration file
 #from configs.blackfly_configs  import configs
@@ -148,7 +149,7 @@ while(not stop):
     num_frames_received += 1
 
     #NEW - FIND BACKGROUND
-    if i==13:
+    """ if i==13:
         bg_sum = np.sum(data_cube[:,::bg_dx,::bg_dy], axis=(1,2), out = inten)
         background_indx = np.argmin(inten) # search for minimum intensity 
         index = 14-background_indx
@@ -161,7 +162,7 @@ while(not stop):
         res = [0] * len(data_cube)
         for val, idx in zip(data_cube, ind):
             res[idx] = val
-        data_cube=res
+        data_cube=res """
 
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
