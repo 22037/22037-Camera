@@ -16,8 +16,9 @@ from datetime import datetime
 from timeit import default_timer as timer
 from queue import Queue
 from examples.configs.blackfly_configs  import configs
-from numba import vectorize
+from   numba import vectorize, jit, prange
 import matplotlib.pyplot as plt
+import sys
  
 if configs['displayfps'] >= configs['fps']:
     display_interval = 0
@@ -101,7 +102,11 @@ fontScale      = 1
 fontColor      = (0,0,255)
 lineType       = 2
 cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE) # or WINDOW_NORMAL
- 
+main_window_name         = 'Captured'
+binned_window_name       = 'Binned'
+processed_window_name    = 'Band-Passed'
+ratioed_window_name      = 'Ratioed'
+
 # Setting up logging
 logging.basicConfig(level=logging.DEBUG) # options are: DEBUG, INFO, ERROR, WARNING
 logger = logging.getLogger("Main")
@@ -132,7 +137,34 @@ num_frames_received    = 0  # keep track of how many captured frames reach the m
 num_frames_displayed   = 0  # keep track of how many frames are displayed
 measured_dps           = 0  # computed in main thread, number of frames displayed per second
 proc_time              = 0 
- 
+counter      = bin_time  = 0  
+min_fr = 0.0
+max_fr = 1.0
+
+ # Reducing the image resolution by binning (summing up pixels)
+bin_x=20
+bin_y=20
+scale = (bin_x*bin_y*255)
+
+# Binning 20 pixels of the 8bit images
+@jit(nopython=True, fastmath=True, parallel=True)
+def bin20(arr_in):
+    m,n,o   = np.shape(arr_in)
+    arr_tmp = np.empty((m//20,n,o), dtype='uint16')
+    arr_out = np.empty((m//20,n//20,o), dtype='uint32')
+    for i in prange(m//20):
+        arr_tmp[i,:,:] =  arr_in[i*20,:,:]    + arr_in[i*20+1,:,:]  + arr_in[i*20+2,:,:]  + arr_in[i*20+3,:,:]  + arr_in[i*20+4,:,:]  + arr_in[i*20+5,:,:]  + \
+                          arr_in[i*20+6,:,:]  + arr_in[i*20+7,:,:]  + arr_in[i*20+8,:,:]  + arr_in[i*20+9,:,:]  + arr_in[i*20+10,:,:] + arr_in[i*20+11,:,:] + \
+                          arr_in[i*20+12,:,:] + arr_in[i*20+13,:,:] + arr_in[i*20+14,:,:] + arr_in[i*20+15,:,:] + arr_in[i*20+16,:,:] + arr_in[i*20+17,:,:] + \
+                          arr_in[i*20+18,:,:] + arr_in[i*20+19,:,:]
+
+    for j in prange(n//20):
+        arr_out[:,j,:]  = arr_tmp[:,j*20,:]    + arr_tmp[:,j*20+1,:]  + arr_tmp[:,j*20+2,:]  + arr_tmp[:,j*20+3,:]  + arr_tmp[:,j*10+4,:]  + arr_tmp[:,j*20+5,:]  + \
+                          arr_tmp[:,j*20+6,:]  + arr_tmp[:,j*20+7,:]  + arr_tmp[:,j*20+8,:]  + arr_tmp[:,j*20+9,:]  + arr_tmp[:,j*20+10,:] + arr_tmp[:,j*20+11,:] + \
+                          arr_tmp[:,j*20+12,:] + arr_tmp[:,j*20+13,:] + arr_tmp[:,j*10+14,:] + arr_tmp[:,j*20+15,:] + arr_tmp[:,j*20+16,:] + arr_tmp[:,j*20+17,:] + \
+                          arr_tmp[:,j*20+18,:] + arr_tmp[:,j*20+19,:] 
+    return arr_out
+
 @vectorize(['uint16(uint8, float32, uint8)'], nopython = True, fastmath = True)
 def correction(background, flatfield, data_cube):
     return np.multiply(np.subtract(data_cube,background),flatfield)
@@ -167,6 +199,7 @@ while(not stop):
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
     frame_idx += 1
+
     while not camera.log.empty():
         (level, msg)=camera.log.get_nowait()
         logger.log(level, msg)
@@ -175,6 +208,29 @@ while(not stop):
     if frame_idx >= 14: # 0...13 is populated
         frame_idx = 0
         num_cubes_generated += 1
+
+        #Blood Quantification
+        frame_bin   = bin20(data_cube_corr)
+        # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
+        bin_time   += (time.perf_counter() - start_time)
+
+        frame_ratio = (frame_bin[:,:,1].astype(np.float32)/frame_bin[:,:,2].astype(np.float32)*255.0).astype(np.uint16)
+
+        # Display Binned Image, make it same size as original image
+        frame_bin_01 = frame_bin/scale # make image 0..1
+        frame_tmp = cv2.resize(frame_bin_01, (width,height), fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
+        cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
+        cv2.imshow(binned_window_name, frame_tmp)
+
+        # Display Ratio Image, make it same size as original image
+        frame_ratio_01 = (frame_ratio/255).astype(np.float32)
+        frame_ratio_01 = np.sqrt(frame_ratio_01)
+        min_fr = 0.95*min_fr + 0.05*frame_ratio_01.min()
+        max_fr = 0.95*max_fr + 0.05*frame_ratio_01.max()        
+        frame_ratio_01 = (frame_ratio_01 -min_fr)/(max_fr-min_fr)
+        frame_tmp = cv2.resize(frame_ratio_01, (width,height),fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
+        cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
+        cv2.imshow(ratioed_window_name, frame_tmp)
 
         # HDF5 
         try: 

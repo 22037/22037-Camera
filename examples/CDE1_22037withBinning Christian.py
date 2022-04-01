@@ -103,6 +103,7 @@ bin_y=20
 scale = (bin_x*bin_y*255)
 
 # Binning 20 pixels of the 8bit images
+@jit(nopython=True, fastmath=True, parallel=True)
 def bin20(arr_in):
     m,n,o   = np.shape(arr_in)
     arr_tmp = np.empty((m//20,n,o), dtype='uint16')
@@ -131,7 +132,7 @@ while(not stop):
  
     # wait for new image
     (frame_time, frame) = camera.capture.get(block=True, timeout=None)
- 
+
     data_cube_corr = correction(background,flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
 
@@ -143,11 +144,9 @@ while(not stop):
 
     # When we have a complete dataset:
     if frame_idx >= 14: # 0...13 is populated
-        frame_idx = 0
         num_cubes_generated += 1
 
-            # Begin Blood Quantification
-        start_time  = time.perf_counter()
+        # Begin Blood Quantification
         frame_bin   = bin20(data_cube_corr)
         # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
         bin_time   += (time.perf_counter() - start_time)
@@ -177,6 +176,8 @@ while(not stop):
         except:
             pass
             # logger.log(logging.WARNING, "HDF5:Storage Queue is full!")
+
+        frame_idx = 0
  
     # Display performance in main loop
 # Display performance in main loop
