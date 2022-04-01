@@ -75,18 +75,16 @@ flatfield[12,:,:] = fit12
 flatfield[13,:,:] = fit13
 background = np.zeros((540, 720), dtype=np.uint8)
 #background = plt.imread("C13-BKGND.tiff")
-#flatfield = [fit0, fit1, fit2, fit3, fit4, fit5, fit6, fit7, fit8, fit9, fit10, fit11, fit12, fit13]
-#flatfield = [fit0_2, fit1_2, fit2_2, fit3_2, fit4_2, fit5_2, fit6_2, fit7_2, fit8_2, fit9_2, fit10_2, fit11_2, fit12_2, fit13_2]
 #flatfield = np.cast['uint8'](2**8.*np.random.random((540,720)))
 data_cube_corr = np.zeros((14, 540, 720), 'uint16')
 frame = np.zeros((540,720), dtype=np.uint8)
 
 #NEW - FIND BACKGROUND
-inten = np.zeros(res[0], 'uint16')
-res: tuple = (14, 540, 720)
 bg_delta: tuple = (64, 64)
 bg_dx = bg_delta[1]
 bg_dy = bg_delta[0]
+inten = np.zeros(14, dtype=np.uint16)
+bg = np.zeros((4, 4), dtype=np.uint8)
 index_array = np.arange(0, 14)
 i=0
 
@@ -141,7 +139,7 @@ counter      = bin_time  = 0
 min_fr = 0.0
 max_fr = 1.0
 
- # Reducing the image resolution by binning (summing up pixels)
+# Reducing the image resolution by binning (summing up pixels)
 bin_x=20
 bin_y=20
 scale = (bin_x*bin_y*255)
@@ -183,18 +181,18 @@ while(not stop):
     #NEW - FIND BACKGROUND
     """ if i==13:
         bg_sum = np.sum(data_cube[:,::bg_dx,::bg_dy], axis=(1,2), out = inten)
-        background_indx = np.argmin(inten) # search for minimum intensity 
+        background_indx = np.argmin(inten) # search for minimum intensity
         index = 14-background_indx
         background = data_cube[background_indx, :, :]
 
         array_plus_index = index_array + index
         ind = array_plus_index%14
 
-        #define new empty array, res, and resort data_cube based on the index
+        #define new empty array, res, and re-sort data_cube based on the index
         res = [0] * len(data_cube)
         for val, idx in zip(data_cube, ind):
             res[idx] = val
-        data_cube=res """
+        #data_cube=res """
 
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
@@ -208,7 +206,6 @@ while(not stop):
     if frame_idx >= 14: # 0...13 is populated
         frame_idx = 0
         num_cubes_generated += 1
-
 
         """ #Blood Quantification
         start_time = time.time()
