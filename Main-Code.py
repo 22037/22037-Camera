@@ -60,19 +60,19 @@ use_queue = True
 data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
 flatfield = np.zeros((14, 540, 720), dtype=np.float32)
 flatfield[0,:,:] = fit0
-data_cube[1,:,:] = fit1
-data_cube[2,:,:] = fit2
-data_cube[3,:,:] = fit3
-data_cube[4,:,:] = fit4
-data_cube[5,:,:] = fit5
-data_cube[6,:,:] = fit6
-data_cube[7,:,:] = fit7
-data_cube[8,:,:] = fit8
-data_cube[9,:,:] = fit9
-data_cube[10,:,:] = fit10
-data_cube[11,:,:] = fit11
-data_cube[12,:,:] = fit12
-data_cube[13,:,:] = fit13
+flatfield[1,:,:] = fit1
+flatfield[2,:,:] = fit2
+flatfield[3,:,:] = fit3
+flatfield[4,:,:] = fit4
+flatfield[5,:,:] = fit5
+flatfield[6,:,:] = fit6
+flatfield[7,:,:] = fit7
+flatfield[8,:,:] = fit8
+flatfield[9,:,:] = fit9
+flatfield[10,:,:] = fit10
+flatfield[11,:,:] = fit11
+flatfield[12,:,:] = fit12
+flatfield[13,:,:] = fit13
 background = np.zeros((540, 720), dtype=np.uint8)
 #background = plt.imread("C13-BKGND.tiff")
 #flatfield = [fit0, fit1, fit2, fit3, fit4, fit5, fit6, fit7, fit8, fit9, fit10, fit11, fit12, fit13]
@@ -209,7 +209,8 @@ while(not stop):
         frame_idx = 0
         num_cubes_generated += 1
 
-        #Blood Quantification
+
+        """ #Blood Quantification
         start_time = time.time()
         frame_bin   = bin20(data_cube_corr)
         # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
@@ -231,7 +232,7 @@ while(not stop):
         frame_ratio_01 = (frame_ratio_01 -min_fr)/(max_fr-min_fr)
         frame_tmp = cv2.resize(frame_ratio_01, (width,height),fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
         cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
-        cv2.imshow(ratioed_window_name, frame_tmp)
+        cv2.imshow(ratioed_window_name, frame_tmp) """
 
         # HDF5 
         try: 
