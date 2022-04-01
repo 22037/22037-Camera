@@ -57,9 +57,24 @@ fit13=np.loadtxt('background', dtype='float32', delimiter=',')
 looptime = 0.0
 use_queue = True
 data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
+flatfield = np.zeros((14, 540, 720), dtype=np.float32)
+flatfield[0,:,:] = fit0
+data_cube[1,:,:] = fit1
+data_cube[2,:,:] = fit2
+data_cube[3,:,:] = fit3
+data_cube[4,:,:] = fit4
+data_cube[5,:,:] = fit5
+data_cube[6,:,:] = fit6
+data_cube[7,:,:] = fit7
+data_cube[8,:,:] = fit8
+data_cube[9,:,:] = fit9
+data_cube[10,:,:] = fit10
+data_cube[11,:,:] = fit11
+data_cube[12,:,:] = fit12
+data_cube[13,:,:] = fit13
 background = np.zeros((540, 720), dtype=np.uint8)
 #background = plt.imread("C13-BKGND.tiff")
-flatfield = [fit0, fit1, fit2, fit3, fit4, fit5, fit6, fit7, fit8, fit9, fit10, fit11, fit12, fit13]
+#flatfield = [fit0, fit1, fit2, fit3, fit4, fit5, fit6, fit7, fit8, fit9, fit10, fit11, fit12, fit13]
 #flatfield = [fit0_2, fit1_2, fit2_2, fit3_2, fit4_2, fit5_2, fit6_2, fit7_2, fit8_2, fit9_2, fit10_2, fit11_2, fit12_2, fit13_2]
 #flatfield = np.cast['uint8'](2**8.*np.random.random((540,720)))
 data_cube_corr = np.zeros((14, 540, 720), 'uint16')
@@ -67,10 +82,11 @@ frame = np.zeros((540,720), dtype=np.uint8)
 
 #NEW - FIND BACKGROUND
 inten = np.zeros(res[0], 'uint16')
-#bg_delta: (int, int) = (64, 64)
-bg_delta = np.zeros((64,64), dtype=np.uint64)
+res: tuple = (14, 540, 720)
+bg_delta: tuple = (64, 64)
 bg_dx = bg_delta[1]
 bg_dy = bg_delta[0]
+index_array = np.arange(0, 14)
 
 #Camera configuration file
 #from configs.blackfly_configs  import configs
@@ -88,7 +104,6 @@ cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE) # or WINDOW_NORMAL
 # Setting up logging
 logging.basicConfig(level=logging.DEBUG) # options are: DEBUG, INFO, ERROR, WARNING
 logger = logging.getLogger("Main")
-
  
 # Setting up Storage
 from camera.streamer.h5storageserver import h5Server
@@ -125,6 +140,7 @@ def correction(background, flatfield, data_cube):
 stop = False
 while(not stop):
     current_time = time.time()
+    i=(i+1)%14 
  
     # wait for new image
     (frame_time, frame) = camera.capture.get(block=True, timeout=None)
@@ -132,14 +148,20 @@ while(not stop):
     num_frames_received += 1
 
     #NEW - FIND BACKGROUND
-    bg_sum = np.sum(data_cube[:,::bg_dx,::bg_dy], axis=(1,2), out = inten)
-    background_indx = np.argmin(inten) # search for minimum intensity 
-    background = data_cube[background_indx, :, :]
+    if i==13:
+        bg_sum = np.sum(data_cube[:,::bg_dx,::bg_dy], axis=(1,2), out = inten)
+        background_indx = np.argmin(inten) # search for minimum intensity 
+        index = 14-background_indx
+        background = data_cube[background_indx, :, :]
 
-    #b_1 = background_indx+1
-    #back1 = data_cube[:b_1]
-    #back2 = data_cube[b_1:]
-    #data_cube = [*back1, *back2]
+        array_plus_index = index_array + index
+        ind = array_plus_index%14
+
+        #define new empty array, res, and resort data_cube based on the index
+        res = [0] * len(data_cube)
+        for val, idx in zip(data_cube, ind):
+            res[idx] = val
+        data_cube=res
 
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
