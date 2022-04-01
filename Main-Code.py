@@ -210,6 +210,7 @@ while(not stop):
         num_cubes_generated += 1
 
         #Blood Quantification
+        start_time = time.time()
         frame_bin   = bin20(data_cube_corr)
         # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
         bin_time   += (time.perf_counter() - start_time)
