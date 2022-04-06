@@ -179,20 +179,15 @@ while(not stop):
     num_frames_received += 1
 
     #NEW - FIND BACKGROUND
-    """ if i==13:
-        bg_sum = np.sum(data_cube[:,::bg_dx,::bg_dy], axis=(1,2), out = inten)
-        background_indx = np.argmin(inten) # search for minimum intensity
-        index = 14-background_indx
-        background = data_cube[background_indx, :, :]
+    if i==13:
+        inten = np.sum(data_cube[:,::1,::1], axis=(1,2))
+        background_indx = np.argmin(inten) + 1
 
-        array_plus_index = index_array + index
+        index_array = np.arange(0, 14)
+        array_plus_index = index_array + background_indx
         ind = array_plus_index%14
 
-        #define new empty array, res, and re-sort data_cube based on the index
-        res = [0] * len(data_cube)
-        for val, idx in zip(data_cube, ind):
-            res[idx] = val
-        #data_cube=res """
+        data_cube = data_cube[ind,:,:]
 
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
