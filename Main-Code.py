@@ -202,7 +202,7 @@ while(not stop):
         frame_idx = 0
         num_cubes_generated += 1
 
-        """ #Blood Quantification
+        #Blood Quantification
         start_time = time.time()
         frame_bin   = bin20(data_cube_corr)
         # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
@@ -217,7 +217,7 @@ while(not stop):
         #frame_ratio = (frame_bin[:,:,1].astype(np.float32)/frame_bin[:,:,5].astype(np.float32)*255.0).astype(np.uint16)
 
         # Display Binned Image, make it same size as original image
-        frame_bin_01 = frame_bin/scale # make image 0..1
+        frame_bin_01 = np.divide(frame_bin,scale) # make image 0..1
         frame_tmp = cv2.resize(frame_bin_01, (width,height), fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
         cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
         cv2.imshow(binned_window_name, frame_tmp)
@@ -225,12 +225,12 @@ while(not stop):
         # Display Ratio Image, make it same size as original image
         frame_ratio_01 = (frame_ratio/255).astype(np.float32)
         frame_ratio_01 = np.sqrt(frame_ratio_01)
-        min_fr = 0.95*min_fr + 0.05*frame_ratio_01.min()
-        max_fr = 0.95*max_fr + 0.05*frame_ratio_01.max()        
-        frame_ratio_01 = (frame_ratio_01 -min_fr)/(max_fr-min_fr)
+        min_fr = np.multiply(0.95,min_fr) + np.multiply(0.05,frame_ratio_01.min())
+        max_fr = np.multiply(0.95,max_fr) +np.multiply(0.05,frame_ratio_01.max())       
+        frame_ratio_01 = np.divide((np.subtract(frame_ratio_01,min_fr)),(np.subtract(max_fr,min_fr)))
         frame_tmp = cv2.resize(frame_ratio_01, (width,height),fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
         cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
-        cv2.imshow(ratioed_window_name, frame_tmp) """
+        cv2.imshow(ratioed_window_name, frame_tmp)
 
         # HDF5 
         try: 

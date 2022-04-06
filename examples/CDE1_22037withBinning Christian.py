@@ -29,6 +29,10 @@ def bin20(arr_in):
 
 data_cube = np.cast['uint16'](np.random.random((14, 540,720)))
 print("The shape of a numpy array is: ", np.shape(data_cube))
+starttime = time.time()
 binned_im = bin20(data_cube)
+endtime = time.time()
+totaltime = starttime - endtime
 print("The shape of a numpy array is: ", np.shape(binned_im))
+print("The time it took was: ", totaltime)
 print("done")
