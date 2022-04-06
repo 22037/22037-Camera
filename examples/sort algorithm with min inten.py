@@ -43,7 +43,19 @@ data_cube[11,:,:] = array12
 data_cube[12,:,:] = array13
 data_cube[13,:,:] = array14
 
-idx = 10
+#this is based on bgflatprocessor code in camera -> processor folder
+
+bg_delta: tuple = (64, 64)
+bg_dx = bg_delta[1]
+bg_dy = bg_delta[0]
+inten = np.zeros(14, dtype=np.uint16)
+bg = np.zeros((4, 4), dtype=np.uint8)
+
+_ = np.sum(data_cube[:,::bg_dx,::bg_dy], axis=(1,2), out = inten)
+background_indx = np.argmin(inten) # search for minimum intensity 
+bg = data_cube[background_indx, :, :]
+
+idx = background_indx
 index = 14-idx
 
 index_array = np.arange(0, 14)
