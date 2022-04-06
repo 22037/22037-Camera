@@ -29,32 +29,28 @@ array14 = np.arange(0, 16).reshape(4,4)
 
 #this will be the actual data cube in the main code
 data_cube[0,:,:] = array
-data_cube[1,:,:] = array2
-data_cube[2,:,:] = array3
-data_cube[3,:,:] = array4
-data_cube[4,:,:] = array5
-data_cube[5,:,:] = array6
-data_cube[6,:,:] = array7
-data_cube[7,:,:] = array8
-data_cube[8,:,:] = array9
+data_cube[1,:,:] = array2+20
+data_cube[2,:,:] = array3+40
+data_cube[3,:,:] = array4+60
+data_cube[4,:,:] = array5+80
+data_cube[5,:,:] = array6+100
+data_cube[6,:,:] = array7+120
+data_cube[7,:,:] = array8+140
+data_cube[8,:,:] = array9+160
 data_cube[9,:,:] = array10
-data_cube[10,:,:] = array11
-data_cube[11,:,:] = array12
-data_cube[12,:,:] = array13
-data_cube[13,:,:] = array14
+data_cube[10,:,:] = array11+180
+data_cube[11,:,:] = array12+200
+data_cube[12,:,:] = array13+220
+data_cube[13,:,:] = array14+240
 
-idx = 10
-index = 14-idx
+inten = np.sum(data_cube[:,::1,::1], axis=(1,2))
+background_indx = np.argmin(inten) + 1
 
 index_array = np.arange(0, 14)
-array_plus_index = index_array + index
+array_plus_index = index_array + background_indx
 ind = array_plus_index%14
 
-res = [0] * len(data_cube)
-for val, idx in zip(data_cube, ind):
-    res[idx] = val
-
-data_cube = res
+data_cube = data_cube[ind,:,:]
 
 print(data_cube)
 
