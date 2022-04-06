@@ -79,13 +79,10 @@ background = np.zeros((540, 720), dtype=np.uint8)
 data_cube_corr = np.zeros((14, 540, 720), 'uint16')
 frame = np.zeros((540,720), dtype=np.uint8)
 
-#NEW - FIND BACKGROUND
+#initialize variables for sort algorithm
 bg_delta: tuple = (64, 64)
 bg_dx = bg_delta[1]
 bg_dy = bg_delta[0]
-inten = np.zeros(14, dtype=np.uint16)
-bg = np.zeros((4, 4), dtype=np.uint8)
-index_array = np.arange(0, 14)
 i=0
 
 #Camera configuration file
@@ -180,7 +177,7 @@ while(not stop):
 
     #NEW - FIND BACKGROUND
     if i==13:
-        inten = np.sum(data_cube[:,::1,::1], axis=(1,2))
+        inten = np.sum(data_cube[:,::bg_dx,::bg_dy], axis=(1,2))
         background_indx = np.argmin(inten) + 1
 
         index_array = np.arange(0, 14)
