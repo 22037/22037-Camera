@@ -35,8 +35,6 @@ measure_time = 5.0 # average measurements over 5 secs
 camera_index = 0 # default camera starts at 0 by operating system
 
 #read in curvefit files
-#background=np.loadtxt('background', dtype='uint8', delimiter=',')
-
 #images are stored in BSstandard folder
 fit0=np.loadtxt('fit0_2', dtype='float32', delimiter=',')
 fit1=np.loadtxt('fit1_2', dtype='float32', delimiter=',')
@@ -79,13 +77,10 @@ background = np.zeros((540, 720), dtype=np.uint8)
 data_cube_corr = np.zeros((14, 540, 720), 'uint16')
 frame = np.zeros((540,720), dtype=np.uint8)
 
-#NEW - FIND BACKGROUND
+#initialize variables for sort algorithm
 bg_delta: tuple = (64, 64)
 bg_dx = bg_delta[1]
 bg_dy = bg_delta[0]
-inten = np.zeros(14, dtype=np.uint16)
-bg = np.zeros((4, 4), dtype=np.uint8)
-index_array = np.arange(0, 14)
 i=0
 
 #Camera configuration file
@@ -167,6 +162,18 @@ def bin20(arr_in):
 def correction(background, flatfield, data_cube):
     return np.multiply(np.subtract(data_cube,background),flatfield)
 
+def sort_algorithm(data_in):
+    inten = np.sum(data_in[:,::bg_dx,::bg_dy], axis=(1,2))
+    background_indx = np.argmin(inten) + 1
+
+    index_array = np.arange(0, 14)
+    array_plus_index = index_array + background_indx
+    ind = array_plus_index%14
+
+    data_out = data_in[ind,:,:]
+
+    return data_out
+
 # Main Loop
 stop = False
 while(not stop):
@@ -180,14 +187,7 @@ while(not stop):
 
     #NEW - FIND BACKGROUND
     if i==13:
-        inten = np.sum(data_cube[:,::1,::1], axis=(1,2))
-        background_indx = np.argmin(inten) + 1
-
-        index_array = np.arange(0, 14)
-        array_plus_index = index_array + background_indx
-        ind = array_plus_index%14
-
-        data_cube = data_cube[ind,:,:]
+        data_cube = sort_algorithm(data_cube)
 
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
