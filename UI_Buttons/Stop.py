@@ -1,2 +1,2 @@
-def stop(arr_in):
-    
+def stop(self):
+    self.camera.stop()
