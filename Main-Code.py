@@ -162,17 +162,17 @@ def bin20(arr_in):
 def correction(background, flatfield, data_cube):
     return np.multiply(np.subtract(data_cube,background),flatfield)
 
-def sort_algorithm(data_in):
-    inten = np.sum(data_in[:,::bg_dx,::bg_dy], axis=(1,2))
+def sort_algorithm(data):
+    inten = np.sum(data[:,::bg_dx,::bg_dy], axis=(1,2))
     background_indx = np.argmin(inten) + 1
 
     index_array = np.arange(0, 14)
     array_plus_index = index_array + background_indx
     ind = array_plus_index%14
 
-    data_out = data_in[ind,:,:]
+    data = data[ind,:,:]
 
-    return data_out
+    return data
 
 # Main Loop
 stop = False
