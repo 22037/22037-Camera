@@ -60,7 +60,7 @@
         <attribute name="title">
          <string>Main Screen</string>
         </attribute>
-        <widget class="QPushButton" name="pushButton_23">
+        <widget class="QPushButton" name="pushButton_CameraOn">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -73,7 +73,7 @@
           <string>START</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_24">
+        <widget class="QPushButton" name="pushButton_CameraStop">
          <property name="geometry">
           <rect>
            <x>90</x>
@@ -86,7 +86,7 @@
           <string>STOP</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_25">
+        <widget class="QPushButton" name="pushButton_CameraSave">
          <property name="geometry">
           <rect>
            <x>170</x>
@@ -99,7 +99,7 @@
           <string>SAVE</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_26">
+        <widget class="QPushButton" name="pushButton_Analysis">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -112,7 +112,7 @@
           <string>ANALYSIS</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_27">
+        <widget class="QPushButton" name="pushButton_DefaultView">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -122,10 +122,10 @@
           </rect>
          </property>
          <property name="text">
-          <string>TARGET</string>
+          <string>DEFAULT  VIEW</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_28">
+        <widget class="QPushButton" name="pushButton_Wavelength">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -138,7 +138,7 @@
           <string>WAVELENGTH</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_29">
+        <widget class="QPushButton" name="pushButton_Physicogical">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -151,7 +151,7 @@
           <string>PHYSICOGICAL DATA</string>
          </property>
         </widget>
-        <widget class="QLCDNumber" name="lcdNumber_3">
+        <widget class="QLCDNumber" name="lcdNumber_FPSin">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -161,7 +161,7 @@
           </rect>
          </property>
         </widget>
-        <widget class="QLCDNumber" name="lcdNumber_4">
+        <widget class="QLCDNumber" name="lcdNumber_FPSout">
          <property name="geometry">
           <rect>
            <x>620</x>
@@ -171,7 +171,7 @@
           </rect>
          </property>
         </widget>
-        <widget class="QLabel" name="label_33">
+        <widget class="QLabel" name="label_FPSInHeader">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -184,7 +184,7 @@
           <string>FPS IN</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_48">
+        <widget class="QLabel" name="label_FPSOutHeader">
          <property name="geometry">
           <rect>
            <x>620</x>
@@ -197,7 +197,7 @@
           <string>FPS OUT</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_49">
+        <widget class="QLabel" name="label_CameraDisplay">
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -210,32 +210,6 @@
           <string>.</string>
          </property>
         </widget>
-        <!-- <widget class="QPushButton" name="pushButton_30">
-         <property name="geometry">
-          <rect>
-           <x>260</x>
-           <y>340</y>
-           <width>101</width>
-           <height>41</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Desktop Camera</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_31">
-         <property name="geometry">
-          <rect>
-           <x>370</x>
-           <y>340</y>
-           <width>101</width>
-           <height>41</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Off Camera</string>
-         </property>
-        </widget> -->
        </widget>
        <widget class="QWidget" name="SerialMonitor">
         <attribute name="title">
