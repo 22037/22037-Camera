@@ -17,9 +17,8 @@ from timeit import default_timer as timer
 from queue import Queue
 from examples.configs.blackfly_configs  import configs
 from   numba import vectorize, jit, prange
-import matplotlib.pyplot as plt
-import sys
- 
+from scipy.optimize import curve_fit
+
 if configs['displayfps'] >= configs['fps']:
     display_interval = 0
 else:
@@ -164,15 +163,59 @@ def correction(background, flatfield, data_cube):
 
 def sort_algorithm(data):
     inten = np.sum(data[:,::bg_dx,::bg_dy], axis=(1,2))
-    background_indx = np.argmin(inten) + 1
+    background_indx = np.argmin(inten)
+
+    #flatfield[13,:,:] = wavelength(data_cube[background_indx,:,:])
+    #
 
     index_array = np.arange(0, 14)
-    array_plus_index = index_array + background_indx
+    array_plus_index = index_array + background_indx + 1
     ind = array_plus_index%14
 
     data = data[ind,:,:]
 
     return data
+
+def wavelength(background):
+    width  = 720
+    height = 540
+    xmin = 0
+    xmax = width - 1
+    nx =  xmax - xmin + 1
+    ymin = 0
+    ymax = height - 1
+    ny =  ymax - ymin + 1
+    x, y = np.linspace(xmin, xmax, nx), np.linspace(ymin, ymax, ny)
+    X, Y = np.meshgrid(x, y)
+
+    # Our function to fit is going to be a sum of two-dimensional polynomials
+    def poly2(x, y, x0, y0, a0, a1, a2, a3, a4, a5):
+        x_c = x - x0
+        y_c = y - y0
+        return a0 + a1*(x_c) + a2*y_c + a3*x_c**2 + a4 * x_c * y_c + a5 * y_c**2
+    def _poly2(M, *args):
+        x, y = M
+        arr = np.zeros(x.shape)
+        arr = poly2(x, y, *args[0:8])
+        return arr
+    
+    image = background
+
+    # define 2nd order fit parameters
+    p2 = [720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
+    # we need to ravel the meshgrids of X, Y points to a pair of 1-D arrays.
+    xdata = np.vstack((X.ravel(), Y.ravel()))
+    ydata = image.ravel()
+    # do the fit using our custom poly2 function
+    popt, pcov = curve_fit(_poly2, xdata, ydata, p2)
+    # create curve fit
+    curvefit = poly2(X, Y, *popt[0:8])
+
+    ######****************** FIT ******************######
+    # curve fit divided by maximum image value to generate matrix from 0 to 1
+    fit = curvefit/255.
+
+    return(fit)
 
 # Main Loop
 stop = False
@@ -202,7 +245,7 @@ while(not stop):
         frame_idx = 0
         num_cubes_generated += 1
 
-        #Blood Quantification
+        """ #Blood Quantification
         start_time = time.time()
         frame_bin   = bin20(data_cube_corr)
         # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
@@ -230,7 +273,7 @@ while(not stop):
         frame_ratio_01 = np.divide((np.subtract(frame_ratio_01,min_fr)),(np.subtract(max_fr,min_fr)))
         frame_tmp = cv2.resize(frame_ratio_01, (width,height),fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
         cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
-        cv2.imshow(ratioed_window_name, frame_tmp)
+        cv2.imshow(ratioed_window_name, frame_tmp) """
 
         # HDF5 
         try: 
