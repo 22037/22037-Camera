@@ -1,8 +1,8 @@
 __author__ = 'Devesh Khosla - github.com/dekhosla'
 
-from pickle import STOP
 import sys, serial, serial.tools.list_ports,warnings
 from xmlrpc.client import Boolean
+from tracemalloc import stop
 
 from PyQt5.QtCore import QSize, QRect,QObject, pyqtSignal, QThread, pyqtSignal, pyqtSlot
 import time
@@ -63,6 +63,7 @@ textLocation1 = (10,60)
 fontScale     = 1
 fontColor     = (255,255,255)
 lineType      = 2
+stop=pyqtSignal(Boolean)
 
 
 # #defining ports
@@ -107,6 +108,8 @@ class qt(QMainWindow):
         self.thread = None
         self.worker = None
         self.find_port()
+        # self.stop=pyqtSignal(Boolean)
+        self.stop=False
         self.pushButton.clicked.connect(self.start_loop)
         # self.label_11.setText("Not detected")
         # self.label_11.setText(ports[0])
@@ -201,8 +204,9 @@ class qt(QMainWindow):
 
 ############################################################### First page Start #############################################
 # button 23 is for Start camera Button
-    def on_pushButton_23_clicked(self):
-        self.stop = False      
+    def on_pushButton_CameraOn_clicked(self):  
+        # self.camStop=False    
+        self.stop=False
         self.on_camera()        
 
     ############################################################ CAMERA CODE
@@ -220,6 +224,7 @@ class qt(QMainWindow):
         counter      = bin_time  = 0  
         min_fr = 0.0
         max_fr = 1.0
+        # stop=pyqtSignal(Boolean)
 
         # Reducing the image resolution by binning (summing up pixels)
         bin_x=20
@@ -373,10 +378,10 @@ class qt(QMainWindow):
         def correction(background, flatfield, data_cube):
             return np.multiply(np.subtract(data_cube,background),flatfield)
 
-        stop = self.stop
+        stop=self.stop
         i=0
         while(not stop):
-            stop = self.stop
+            stop=self.stop
             current_time = time.time()
             i=(i+1)%14 
         
@@ -470,26 +475,36 @@ class qt(QMainWindow):
                     stop = True
                 last_display = current_time
                 num_frames_displayed += 1
-    ############################################################END CAMERA CODE
-    
-# button 24 is for Stop spin view Button
-    def on_pushButton_24_clicked(self, STOP):
-        # self.label_49.clear()   
-        #self.camera.stop()
-        self.stop = True
+    ############################################################END CAMERA CODE     
 
+# button 24 is for Stop spin view Button
+    def on_pushButton_Camerastop_clicked(self):
+        # self.label_49.clear()   
+        # self.camera.stop()
+        self.stop=True
 
 
 # button 25 is for save data spin view Button
-    def on_pushButton_25_clicked(self):
+    def on_pushButton_CameraStop_clicked(self):
         # display save data
         self.label_49.clear() 
+        self.on_save()
 
+    def on_save(self):
+        # HDF5 
+        try: 
+            self.hdf5.queue.put_nowait((self.frame_time, self.data_cube_corr)) 
+            num_cubes_stored += 1 # executed if above was successful
+        except:
+            pass
+            # logger.log(logging.WARNING, "HDF5:Storage Queue is full!")
+
+        return()
 ############################################################### First page End ###############################################
 
 ############################################################### Second page Start ############################################
     def find_port(self):
-        self.label_49.clear()
+        self.label_CameraDisplay.clear()
 
         #defining ports
         self.ports1 = [
@@ -504,8 +519,8 @@ class qt(QMainWindow):
         if len(self.ports1) > 1:
          warnings.warn('Connected....')
 
-        self.selectedSerial = serial.Serial(self.ports1[0],9600)
-        self.label_11.setText(self.ports1[0])
+        # self.selectedSerial = serial.Serial(self.ports1[0],9600)
+        # self.label_11.setText(self.ports1[0])
 
     def on_pushButton_clicked(self):
       
