@@ -1,6 +1,8 @@
 __author__ = 'Devesh Khosla - github.com/dekhosla'
 
+from pickle import STOP
 import sys, serial, serial.tools.list_ports,warnings
+from xmlrpc.client import Boolean
 
 from PyQt5.QtCore import QSize, QRect,QObject, pyqtSignal, QThread, pyqtSignal, pyqtSlot
 import time
@@ -199,7 +201,8 @@ class qt(QMainWindow):
 
 ############################################################### First page Start #############################################
 # button 23 is for Start camera Button
-    def on_pushButton_23_clicked(self):      
+    def on_pushButton_23_clicked(self):
+        self.stop = False      
         self.on_camera()        
 
     ############################################################ CAMERA CODE
@@ -370,9 +373,10 @@ class qt(QMainWindow):
         def correction(background, flatfield, data_cube):
             return np.multiply(np.subtract(data_cube,background),flatfield)
 
-        stop = False
+        stop = self.stop
         i=0
         while(not stop):
+            stop = self.stop
             current_time = time.time()
             i=(i+1)%14 
         
@@ -469,9 +473,11 @@ class qt(QMainWindow):
     ############################################################END CAMERA CODE
     
 # button 24 is for Stop spin view Button
-    def on_pushButton_24_clicked(self):
+    def on_pushButton_24_clicked(self, STOP):
         # self.label_49.clear()   
-        self.camera.stop()
+        #self.camera.stop()
+        self.stop = True
+
 
 
 # button 25 is for save data spin view Button
