@@ -1,17 +1,9 @@
 #code to sort algorithm of images
 
-from threading import Thread
-from threading import Lock
-
-import logging
-import time
-#
 import numpy as np
 from numba import vectorize
 
 import matplotlib.pyplot as plt
-
-data_cube = np.zeros((14, 4, 4), dtype=np.uint8)
 
 #create stand-in arrays - all the same except one is all zeros to simulate background
 fit0=plt.imread("C0-365.tiff")

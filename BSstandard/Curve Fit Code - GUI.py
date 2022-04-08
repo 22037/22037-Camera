@@ -31,8 +31,7 @@ def _poly2(M, *args):
 
 
 ######****************** IMAGE ******************######
-image = plt.imread("file name.tiff")
-
+image = plt.imread("C4-623.tiff")
 
 # define 2nd order fit parameters
 p2 = [720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
@@ -44,15 +43,20 @@ popt, pcov = curve_fit(_poly2, xdata, ydata, p2)
 # create curve fit
 curvefit = poly2(X, Y, *popt[0:8])
 
-
 ######****************** FIT ******************######
 # curve fit divided by maximum image value to generate matrix from 0 to 1
 fit = curvefit/255.
-
 
 # OPTIONAL: save fit image as a text file
 np.savetxt('fit', fit, delimiter=",")
 # code to read text file image: fit = np.loadtxt('fit', dtype='float32', delimiter=',')
 
-# error of the curve fit
-error = image-fit
+Z = image
+
+# Plot the 3D figure of the fitted function and the residuals.
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+ax.plot_surface(X, Y, fit, cmap='plasma')
+cset = ax.contourf(X, Y, Z-fit, zdir='z', offset=-4, cmap='plasma')
+ax.set_zlim(-4,np.max(fit))
+plt.show()
