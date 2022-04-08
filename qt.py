@@ -203,7 +203,7 @@ class qt(QMainWindow):
  
 
 ############################################################### First page Start #############################################
-# button 23 is for Start camera Button
+# pushButton_CameraOn_
     def on_pushButton_CameraOn_clicked(self):  
         # self.camStop=False    
         self.stop=False
@@ -483,13 +483,10 @@ class qt(QMainWindow):
         # self.camera.stop()
         self.stop=True
 
-
-# button 25 is for save data spin view Button
-    def on_pushButton_CameraStop_clicked(self):
-        # display save data
-        self.label_49.clear() 
-        self.on_save()
-
+# pushButton_CameraSave
+    def on_pushButton_CameraSave_clicked(self):     
+        z=0
+    
     def on_save(self):
         # HDF5 
         try: 
@@ -500,6 +497,20 @@ class qt(QMainWindow):
             # logger.log(logging.WARNING, "HDF5:Storage Queue is full!")
 
         return()
+    # pushButton_DefaultView_
+    def on_pushButton_DefaultView_clicked(self):     
+        z=0
+
+    
+    def on_pushButton_Analysis_clicked(self):        
+        z=0
+        # pushButton_Wavelength
+    def on_pushButton_Wavelength_clicked(self):        
+        z=0
+        # pushButton_Physicogical
+    def on_pushButton_Physicogical_clicked(self):        
+        z=0
+
 ############################################################### First page End ###############################################
 
 ############################################################### Second page Start ############################################
