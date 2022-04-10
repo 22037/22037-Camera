@@ -54,7 +54,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="MainScreen">
         <attribute name="title">
@@ -128,21 +128,33 @@
         <widget class="QPushButton" name="pushButton_Wavelength">
          <property name="geometry">
           <rect>
-           <x>530</x>
-           <y>210</y>
-           <width>161</width>
-           <height>51</height>
+           <x>640</x>
+           <y>230</y>
+           <width>41</width>
+           <height>31</height>
           </rect>
          </property>
+         <property name="font">
+          <font>
+           <italic>false</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="tabletTracking">
+          <bool>false</bool>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
-          <string>WAVELENGTH</string>
+          <string>OK</string>
          </property>
         </widget>
         <widget class="QPushButton" name="pushButton_Physicogical">
          <property name="geometry">
           <rect>
            <x>530</x>
-           <y>270</y>
+           <y>290</y>
            <width>161</width>
            <height>51</height>
           </rect>
@@ -210,12 +222,40 @@
           <string>.</string>
          </property>
         </widget>
+        <widget class="QComboBox" name="comboBoxDropDown">
+         <property name="geometry">
+          <rect>
+           <x>540</x>
+           <y>230</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Wavelength">
+         <property name="geometry">
+          <rect>
+           <x>540</x>
+           <y>200</y>
+           <width>141</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>WAVELENGTH</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QWidget" name="SerialMonitor">
         <attribute name="title">
          <string>Serial Monitor</string>
         </attribute>
-        <widget class="QTextEdit" name="textEdit_3">
+        <widget class="QTextEdit" name="textEdit_DisplayCommData">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -225,7 +265,7 @@
           </rect>
          </property>
         </widget>
-        <widget class="QTextEdit" name="textEdit_2">
+        <widget class="QTextEdit" name="textEdit_TextSendDisplay">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -235,7 +275,7 @@
           </rect>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="pushButton_SendComm">
          <property name="geometry">
           <rect>
            <x>430</x>
@@ -285,14 +325,14 @@
          </property>
          <layout class="QFormLayout" name="formLayout">
           <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="label_PortAvail">
             <property name="text">
              <string>Port Avaliable:</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="label_11">
+           <widget class="QLabel" name="label_PortDisplay">
             <property name="text">
              <string>-</string>
             </property>
@@ -311,14 +351,14 @@
          </property>
          <layout class="QFormLayout" name="formLayout_2">
           <item row="0" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="label_PortConnected">
             <property name="text">
              <string>Port Status</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="label_PortStatus">
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -340,7 +380,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
-           <widget class="QLabel" name="label_10">
+           <widget class="QLabel" name="label_DisplayOption">
             <property name="text">
              <string>Connection Options:</string>
             </property>
@@ -349,14 +389,14 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="pushButton_StopComm">
               <property name="text">
                <string>STOP</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="pushButton_StartComm">
               <property name="text">
                <string>START</string>
               </property>
@@ -365,7 +405,7 @@
            </layout>
           </item>
           <item>
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="label_Percentage">
             <property name="text">
              <string>Connection Percentage Status:</string>
             </property>
@@ -379,7 +419,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="textEdit">
+           <widget class="QTextEdit" name="textEdit_displayMessage">
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -392,7 +432,7 @@
         <attribute name="title">
          <string>About</string>
         </attribute>
-        <widget class="QTextBrowser" name="textBrowser">
+        <widget class="QTextBrowser" name="textBrowser_About">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -417,7 +457,7 @@ p, li { white-space: pre-wrap; }
         <attribute name="title">
          <string>Help</string>
         </attribute>
-        <widget class="QTextBrowser" name="textBrowser_2">
+        <widget class="QTextBrowser" name="textBrowser_Help">
          <property name="geometry">
           <rect>
            <x>10</x>
