@@ -115,6 +115,7 @@ class cameraOnSelected(QObject):
 
 
 class qt(QMainWindow):
+
     finished = pyqtSignal()
     intReady = pyqtSignal(str)
     @pyqtSlot()
@@ -135,11 +136,18 @@ class qt(QMainWindow):
         self.UiComponents()  
         self.pushButton_CameraOn.clicked.connect(self.on_pushButton_CameraOn)
         self.pushButton_CameraStop.clicked.connect(self.on_pushButton_CameraStop)      
-        self.pushButton_CameraSave.clicked.connect(self.on_pushButton_CameraSave)     
+        self.pushButton_CameraSave.clicked.connect(self.on_pushButton_CameraSave) 
+
+        self.pushButton_DefaultView.clicked.connect(self.on_pushButton_DefaultView)      
+
+        self.pushButton_Analysis.clicked.connect(self.on_pushButton_Analysis)      
+        self.pushButton_Wavelength.clicked.connect(self.on_pushButton_Wavelength) 
+        self.pushButton_Physicogical.clicked.connect(self.on_pushButton_Physicogical) 
         
        
      # method for widgets
     def UiComponents(self):
+        
         channel_list = ["All","Channel_1", "Channel_2", "Channel_3", "Channel_4","Channel_5", "Channel_6", "Channel_7", "Channel_8",
         "Channel_9", "Channel_10", "Channel_11", "Channel_12","Channel_13", "Channel_14"]
  
@@ -460,12 +468,10 @@ class qt(QMainWindow):
         self.label_CameraDisplay.clear()
 
 #3. Camera Save pushButton_CameraSave
-    def on_pushButton_CameraSave(self,checked):     
-        z=0
+    def on_pushButton_CameraSave(self):  
         self.on_save()
     
     def on_save(self):
-
           # Setting up Storage
         from camera.streamer.h5storageserver import h5Server
         print("Starting Storage Server")
@@ -487,67 +493,90 @@ class qt(QMainWindow):
         return()
 
 # 4. Display Target or default view pushButton_DefaultView_
-    def on_pushButton_DefaultView_clicked(self):     
+    def on_pushButton_DefaultView(self):     
         z=0
     def target(window_name, display_frame):
       cv2.imshow(window_name, display_frame)
 
 #  5.  Analysis on_pushButton_Analysis_clicked
-    def on_pushButton_Analysis_clicked(self):        
+    def on_pushButton_Analysis(self):        
         z=0
 # 6. Okay Burron pushButton_Wavelength
-    def on_pushButton_Wavelength_clicked(self):   
+    def on_pushButton_Wavelength(self):   
         content=self.comboBoxDropDown.currentText()
         z=0
       
     
     
 # 7.  pushButton_Physicogical
-    def on_pushButton_Physicogical_clicked(self):        
-        z=0
+    def on_pushButton_Physicogical(self):   
         self.blood_psio(self)
 
     #  @jit(nopython=True, fastmath=True, parallel=True)
-    # def blood_psio(self):
-    #     start_time = time.time()
-    #     frame_bin   = bin20(self.data_cube_corr)
-    #             # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
-    #     bin_time   += (time.perf_counter() - start_time)
+    def blood_psio(self):
+        # Reducing the image resolution by binning (summing up pixels)
+        bin_x=20
+        bin_y=20
+        counter      = bin_time  = 0  
+        scale = (bin_x*bin_y*255)
+        start_time = time.time()
+        frame_bin   = self.bin20(self.data_cube_corr)
+                # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
+        bin_time   += (time.perf_counter() - start_time)
 
-    #     frame_ratio = np.divide((frame_bin[:,:,1].astype(np.float32),frame_bin[:,:,2].astype(np.float32)*255.0).astype(np.uint16))
+        frame_ratio = np.divide((frame_bin[:,:,1].astype(np.float32),frame_bin[:,:,2].astype(np.float32)*255.0).astype(np.uint16))
 
-    #     # Display Binned Image, make it same size as original image
-    #     frame_bin_01 = frame_bin/scale # make image 0..1
-    #     frame_tmp = cv2.resize(frame_bin_01, (width,height), fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
-    #     cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
-    #     # cv2.imshow(binned_window_name, frame_tmp)
-    #     Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)               
-    #     FlippedImage = cv2.flip(Image1, 1)
-    #     ConvertToQtFormat = QtGui.QImage(FlippedImage.data, FlippedImage.shape[1],FlippedImage.shape[0], QImage.Format_RGB888)          
-    #     self.label_49.setPixmap(QPixmap.fromImage(ConvertToQtFormat))  
-    #     self.lcdNumber_3.display(self.camera.measured_fps)
-    #     self.lcdNumber_4.display(measured_dps)
-
-
-    #     # Display Ratio Image, make it same size as original image
-    #     frame_ratio_01 = (frame_ratio/255).astype(np.float32)
-    #     frame_ratio_01 = np.sqrt(frame_ratio_01)
-    #     min_fr = 0.95*min_fr + 0.05*frame_ratio_01.min()
-    #     max_fr = 0.95*max_fr + 0.05*frame_ratio_01.max()        
-    #     frame_ratio_01 = (frame_ratio_01 -min_fr)/(max_fr-min_fr)
-    #     frame_tmp = cv2.resize(frame_ratio_01, (width,height),fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
-    #     cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
-    #     # cv2.imshow(ratioed_window_name, frame_tmp)
-    #     Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)               
-    #     FlippedImage = cv2.flip(Image1, 1)
-    #     ConvertToQtFormat = QtGui.QImage(FlippedImage.data, FlippedImage.shape[1],FlippedImage.shape[0], QImage.Format_RGB888)          
-    #     self.label_49.setPixmap(QPixmap.fromImage(ConvertToQtFormat))  
-    #     self.lcdNumber_3.display(self.camera.measured_fps)
-    #     self.lcdNumber_4.display(measured_dps)
+        # Display Binned Image, make it same size as original image
+        frame_bin_01 = frame_bin/scale # make image 0..1
+        frame_tmp = cv2.resize(frame_bin_01, (width,height), fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
+        cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
+        # cv2.imshow(binned_window_name, frame_tmp)
+        Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)               
+        FlippedImage = cv2.flip(Image1, 1)
+        ConvertToQtFormat = QtGui.QImage(FlippedImage.data, FlippedImage.shape[1],FlippedImage.shape[0], QImage.Format_RGB888)          
+       
+        self.label_CameraDisplay.setPixmap(QPixmap.fromImage(ConvertToQtFormat))                
+        self.lcdNumber_FPSin.display(self.camera.measured_fps)
+        self.lcdNumber_FPSout.display(counter)
 
 
-    #     return (frame_ratio)
 
+        # Display Ratio Image, make it same size as original image
+        frame_ratio_01 = (frame_ratio/255).astype(np.float32)
+        frame_ratio_01 = np.sqrt(frame_ratio_01)
+        min_fr = 0.95*min_fr + 0.05*frame_ratio_01.min()
+        max_fr = 0.95*max_fr + 0.05*frame_ratio_01.max()        
+        frame_ratio_01 = (frame_ratio_01 -min_fr)/(max_fr-min_fr)
+        frame_tmp = cv2.resize(frame_ratio_01, (width,height),fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
+        cv2.putText(frame_tmp,"Frame:{}".format(counter), textLocation0, font, fontScale, fontColor, lineType)
+        # cv2.imshow(ratioed_window_name, frame_tmp)
+        Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)               
+        FlippedImage = cv2.flip(Image1, 1)
+        ConvertToQtFormat = QtGui.QImage(FlippedImage.data, FlippedImage.shape[1],FlippedImage.shape[0], QImage.Format_RGB888)    
+
+        self.label_CameraDisplay.setPixmap(QPixmap.fromImage(ConvertToQtFormat))                
+        self.lcdNumber_FPSin.display(self.camera.measured_fps)
+        self.lcdNumber_FPSout.display(counter)
+
+
+        return (frame_ratio)
+
+    def bin20(arr_in):
+        m,n,o   = np.shape(arr_in)
+        arr_tmp = np.empty((m,n//20,o), dtype='uint16')
+        arr_out = np.empty((m,n//20,o//20), dtype='uint32')
+        for i in prange(n//20):
+            arr_tmp[:,i,:] =  arr_in[:,i*20,:]    + arr_in[:,i*20+1,:]  + arr_in[:,i*20+2,:]  + arr_in[:,i*20+3,:]  + arr_in[:,i*20+4,:]  + arr_in[:,i*20+5,:]  + \
+                            arr_in[:,i*20+6,:]  + arr_in[:,i*20+7,:]  + arr_in[:,i*20+8,:]  + arr_in[:,i*20+9,:]  + arr_in[:,i*20+10,:] + arr_in[:,i*20+11,:] + \
+                            arr_in[:,i*20+12,:] + arr_in[:,i*20+13,:] + arr_in[:,i*20+14,:] + arr_in[:,i*20+15,:] + arr_in[:,i*20+16,:] + arr_in[:,i*20+17,:] + \
+                            arr_in[:,i*20+18,:] + arr_in[:,i*20+19,:]
+
+        for j in prange(o//20):
+            arr_out[:,:,j]  = arr_tmp[:,:,j*20]    + arr_tmp[:,:,j*20+1]  + arr_tmp[:,:,j*20+2]  + arr_tmp[:,:,j*20+3]  + arr_tmp[:,:,j*10+4]  + arr_tmp[:,:,j*20+5]  + \
+                            arr_tmp[:,:,j*20+6]  + arr_tmp[:,:,j*20+7]  + arr_tmp[:,:,j*20+8]  + arr_tmp[:,:,j*20+9]  + arr_tmp[:,:,j*20+10] + arr_tmp[:,:,j*20+11] + \
+                            arr_tmp[:,:,j*20+12] + arr_tmp[:,:,j*20+13] + arr_tmp[:,:,j*10+14] + arr_tmp[:,:,j*20+15] + arr_tmp[:,:,j*20+16] + arr_tmp[:,:,j*20+17] + \
+                            arr_tmp[:,:,j*20+18] + arr_tmp[:,:,j*20+19] 
+        return arr_out
 ############################################################### First page End ###############################################
 
 ############################################################### Second page Start ############################################
@@ -625,6 +654,163 @@ class qt(QMainWindow):
         if not self.ports1:
             self.label_11.setText("Nothing found")
  
+
+ ############################################################### Second page Start ############################################
+    def find_port(self):
+        self.label_CameraDisplay.clear()
+
+        #defining ports
+        self.ports1 = [
+            p.device
+            for p in serial.tools.list_ports.comports()
+            if 'USB' in p.description
+        ]
+       
+        if not self.ports1:
+         raise IOError("There is no device exist on serial port!")
+   
+        if len(self.ports1) > 1:
+         warnings.warn('Connected....')
+
+        # self.selectedSerial = serial.Serial(self.ports1[0],9600)
+        # self.label_11.setText(self.ports1[0])
+
+    def on_pushButton_StartComm_clicked(self):
+      
+        self.completed = 0
+        while self.completed < 100:
+            self.completed += 0.001  
+            self.progressBar.setValue(int(self.completed))
+        self.textEdit_displayMessage.setText('Data Gathering...')
+
+        self.label_PortStatus.setText("CONNECTED!")
+
+        self.label_PortStatus.setStyleSheet('color: green')
+        x = 1
+        self.textEdit_displayMessage.setText(":")
+    
+    def on_pushButton_StopComm_clicked(self):
+        self.textEdit_displayMessage.setText('Stopped! Please click CONNECT...')
+
+    
+    def on_pushButton_SendComm_clicked(self):
+        # Send data from serial port:
+        mytext = self.textEdit_TextSendDisplay.toPlainText()
+        # self.portsetup(self)
+        print(mytext.encode())
+        self.selectedSerial.write(mytext.encode())
+    
+    
+    def stop_loop(self):
+        self.worker.working = False
+
+    def onIntReady(self, i):
+        self.textEdit_DisplayCommData.append("{}".format(i))
+        print(i)
+    def loop_finished(self):
+        print('Loop Finished')
+
+    def start_loop(self):
+        # self.portsetup()
+        if self.ports1:           
+            self.worker = Worker()   # a new worker to perform those tasks
+            self.thread = QThread()  # a new thread to run our background tasks in
+            self.worker.moveToThread(self.thread)  # move the worker into the thread,do this first before connecting the signals
+            self.thread.started.connect(self.work) # begin our worker object's loop when the thread starts running
+
+            self.worker.intReady.connect(self.onIntReady)
+            self.pushButton_StopComm.clicked.connect(self.stop_loop)      # stop the loop on the stop button click
+            self.worker.finished.connect(self.loop_finished)       #do something in the gui when the worker loop ends
+
+            self.worker.finished.connect(self.thread.quit)    # tell the thread it's time to stop running
+            self.worker.finished.connect(self.worker.deleteLater)  #have worker mark itself for deletion
+            self.thread.finished.connect(self.thread.deleteLater) # have thread mark itself for deletion
+
+            self.thread.start()
+        if not self.ports1:
+            self.label_11.setText("Nothing found")
+ 
+ 
+
+   
+
+############################################################### Second page Start ############################################
+    def find_port(self):
+        self.label_CameraDisplay.clear()
+
+        #defining ports
+        self.ports1 = [
+            p.device
+            for p in serial.tools.list_ports.comports()
+            if 'USB' in p.description
+        ]
+       
+        if not self.ports1:
+         raise IOError("There is no device exist on serial port!")
+   
+        if len(self.ports1) > 1:
+         warnings.warn('Connected....')
+
+        # self.selectedSerial = serial.Serial(self.ports1[0],9600)
+        # self.label_11.setText(self.ports1[0])
+
+    def on_pushButton_StartComm_clicked(self):
+      
+        self.completed = 0
+        while self.completed < 100:
+            self.completed += 0.001  
+            self.progressBar.setValue(int(self.completed))
+        self.textEdit_displayMessage.setText('Data Gathering...')
+
+        self.label_PortStatus.setText("CONNECTED!")
+
+        self.label_PortStatus.setStyleSheet('color: green')
+        x = 1
+        self.textEdit_displayMessage.setText(":")
+    
+    def on_pushButton_StopComm_clicked(self):
+        self.textEdit_displayMessage.setText('Stopped! Please click CONNECT...')
+
+    
+    def on_pushButton_SendComm_clicked(self):
+        # Send data from serial port:
+        mytext = self.textEdit_TextSendDisplay.toPlainText()
+        # self.portsetup(self)
+        print(mytext.encode())
+        self.selectedSerial.write(mytext.encode())
+    
+    
+    def stop_loop(self):
+        self.worker.working = False
+
+    def onIntReady(self, i):
+        self.textEdit_DisplayCommData.append("{}".format(i))
+        print(i)
+    def loop_finished(self):
+        print('Loop Finished')
+
+    def start_loop(self):
+        # self.portsetup()
+        if self.ports1:           
+            self.worker = Worker()   # a new worker to perform those tasks
+            self.thread = QThread()  # a new thread to run our background tasks in
+            self.worker.moveToThread(self.thread)  # move the worker into the thread,do this first before connecting the signals
+            self.thread.started.connect(self.work) # begin our worker object's loop when the thread starts running
+
+            self.worker.intReady.connect(self.onIntReady)
+            self.pushButton_StopComm.clicked.connect(self.stop_loop)      # stop the loop on the stop button click
+            self.worker.finished.connect(self.loop_finished)       #do something in the gui when the worker loop ends
+
+            self.worker.finished.connect(self.thread.quit)    # tell the thread it's time to stop running
+            self.worker.finished.connect(self.worker.deleteLater)  #have worker mark itself for deletion
+            self.thread.finished.connect(self.thread.deleteLater) # have thread mark itself for deletion
+
+            self.thread.start()
+        if not self.ports1:
+            self.label_11.setText("Nothing found")
+ 
+ 
+
    
 ############################################################### Second page End ##############################################
 
