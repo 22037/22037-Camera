@@ -422,9 +422,9 @@ class qt(QMainWindow):
                 Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)               
                 FlippedImage = cv2.flip(Image1, 1)
                 ConvertToQtFormat = QtGui.QImage(FlippedImage.data, FlippedImage.shape[1],FlippedImage.shape[0], QImage.Format_RGB888)          
-                self.label_49.setPixmap(QPixmap.fromImage(ConvertToQtFormat))                
-                self.lcdNumber_3.display(self.camera.measured_fps)
-                self.lcdNumber_4.display(measured_dps)
+                self.label_CameraDisplay.setPixmap(QPixmap.fromImage(ConvertToQtFormat))                
+                self.lcdNumber_FPSin.display(self.camera.measured_fps)
+                self.lcdNumber_FPSout.display(measured_dps)
 
                 # quit the program if users enter q or closes the display window
                 if cv2.waitKey(1) & 0xFF == ord('q'): # this likely is the reason that display frame rate is not faster than 60fps.
