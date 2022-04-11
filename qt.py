@@ -147,7 +147,7 @@ class qt(QMainWindow):
        
      # method for widgets
     def UiComponents(self):
-        
+
         channel_list = ["All","Channel_1", "Channel_2", "Channel_3", "Channel_4","Channel_5", "Channel_6", "Channel_7", "Channel_8",
         "Channel_9", "Channel_10", "Channel_11", "Channel_12","Channel_13", "Channel_14"]
  
@@ -207,11 +207,28 @@ class qt(QMainWindow):
     #     x = 1
     #     self.textEdit_3.setText(":")
 
+    def startAnimation(self):
+        self.movie.start()
+  
+    # Stop Animation(According to need)
+    def stopAnimation(self):
+        self.movie.stop()
+  
+
 
 ############################################################### First page Start #############################################
 #1.  pushButton_CameraOn_
     def on_pushButton_CameraOn(self):  
         self.stop=False
+        self.hdfSave=False
+         # Loading the GIF
+        self.movie = QMovie("loader.gif")
+        self.label_CameraDisplay.setMovie(self.movie)
+        self.startAnimation()
+        self.label_Status.setText("Status:")
+        self.label_SuccesMessage.setText("Started!")
+        self.label_SuccesMessage.setStyleSheet('color: blue')
+       
         self.on_camera()  
 
     ############################################################ CAMERA CODE
@@ -229,6 +246,7 @@ class qt(QMainWindow):
         counter      = bin_time  = 0  
         min_fr = 0.0
         max_fr = 1.0
+        
         # stop=pyqtSignal(Boolean)
 
         # Reducing the image resolution by binning (summing up pixels)
@@ -325,7 +343,7 @@ class qt(QMainWindow):
         logger = logging.getLogger("Main")
         
         # # Setting up Storage
-        # from camera.streamer.h5storageserver import h5Server
+        from camera.streamer.h5storageserver import h5Server
         # print("Starting Storage Server")
         # now = datetime.now()
         # filename = now.strftime("%Y%m%d%H%M%S") + ".hdf5"
@@ -407,16 +425,34 @@ class qt(QMainWindow):
 
             # When we have a complete dataset:
             if frame_idx >= 14: # 0...13 is populated
-                frame_idx = 0
-                num_cubes_generated += 1              
-
-                # # HDF5 
-                # try: 
-                #     hdf5.queue.put_nowait((self.frame_time, self.data_cube_corr)) 
-                #     num_cubes_stored += 1 # executed if above was successful
-                # except:
-                #     pass
-                #     # logger.log(logging.WARNING, "HDF5:Storage Queue is full!")
+                frame_idx = 0  
+                num_cubes_stored = 0
+                             
+                    # HDF5 
+                save=self.hdfSave
+                if save :
+                    frame_idx = 0
+                    num_cubes_generated += 1  
+                    now = datetime.now() 
+                    filename = now.strftime("%Y%m%d%H%M%S") + ".hdf5"
+                    hdf5 = h5Server("C:\\temp\\" + filename)
+                    print("Starting Storage Server")
+                    hdf5.start()                  
+                   
+                    try: 
+                            # self.hdf5.queue.put_nowait((self.frame_time, self.data_cube_corr)) 
+                        hdf5.queue.put_nowait((self.frame_time, self.data_cube_corr)) 
+                        num_cubes_stored += 1 # executed if above was successful
+                        self.hdfSave=False
+                        save=False
+                        self.label_Status.setText("Status:")
+                        self.label_SuccesMessage.setText("Saved!")
+                        self.label_SuccesMessage.setStyleSheet('color: green')
+                    except:
+                        pass
+                            # logger.log(logging.WARNING, "HDF5:Storage Queue is full!")
+                    
+                    hdf5.stop()  
         
         # Display performance in main loop
             if current_time - last_time >= measure_time:
@@ -456,41 +492,28 @@ class qt(QMainWindow):
                     stop = True
                 last_display = current_time
                 num_frames_displayed += 1
+                self.stopAnimation()
         
     ############################################################END CAMERA CODE     
 
 #2. Camera Stop spin view Button
     def on_pushButton_CameraStop(self): 
+        self.label_Status.setText("Status:")
+        self.label_SuccesMessage.setText("Stoped!")
+        self.label_SuccesMessage.setStyleSheet('color: red')
+        self.startAnimation() 
         self.stop=True
         self.camera.stop()       
         ConvertToQtFormat = QtGui.QImage()          
         self.label_CameraDisplay.setPixmap(QPixmap.fromImage(ConvertToQtFormat))   
         self.label_CameraDisplay.clear()
+        self.stopAnimation() 
 
 #3. Camera Save pushButton_CameraSave
-    def on_pushButton_CameraSave(self):  
-        self.on_save()
-    
-    def on_save(self):
-          # Setting up Storage
-        from camera.streamer.h5storageserver import h5Server
-        print("Starting Storage Server")
-        now = datetime.now()
-        filename = now.strftime("%Y%m%d%H%M%S") + ".hdf5"
-        hdf5 = h5Server("C:\\temp\\" + filename)
-        print("Starting Storage Server")
-        hdf5.start()
-        num_cubes_stored = 0
-        # HDF5 
-        try: 
-            # self.hdf5.queue.put_nowait((self.frame_time, self.data_cube_corr)) 
-            hdf5.queue.put_nowait((self.frame_time, self.data_cube_corr)) 
-            num_cubes_stored += 1 # executed if above was successful
-        except:
-            pass
-            # logger.log(logging.WARNING, "HDF5:Storage Queue is full!")
-        hdf5.stop()
-        return()
+    def on_pushButton_CameraSave(self): 
+        self.startAnimation() 
+        self.hdfSave=True  
+  
 
 # 4. Display Target or default view pushButton_DefaultView_
     def on_pushButton_DefaultView(self):     
@@ -505,8 +528,6 @@ class qt(QMainWindow):
     def on_pushButton_Wavelength(self):   
         content=self.comboBoxDropDown.currentText()
         z=0
-      
-    
     
 # 7.  pushButton_Physicogical
     def on_pushButton_Physicogical(self):   
