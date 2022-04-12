@@ -545,7 +545,7 @@ class qt(QMainWindow):
                 # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
         bin_time   += (time.perf_counter() - start_time)
 
-        frame_ratio = np.divide((frame_bin[:,:,1].astype(np.float32),frame_bin[:,:,2].astype(np.float32)*255.0).astype(np.uint16))
+        frame_ratio = np.divide((frame_bin[1,:,:].astype(np.float32),frame_bin[2,:,:].astype(np.float32)*255.0).astype(np.uint16))
 
         # Display Binned Image, make it same size as original image
         frame_bin_01 = frame_bin/scale # make image 0..1
