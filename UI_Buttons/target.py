@@ -1,9 +1,12 @@
 # target
-#assuming all variables are initialized with start code
+#assuming time, background, flatfield, and all the image display variables are initialized with start code
 #the target code requires variables: self and data_cube
+#requires sort_algorithm function
+#requires correction function
 
 def target(self, data_cube):
     display_interval = 1./300.
+    i=0
 
     while(not stop):
         stop=self.stop
