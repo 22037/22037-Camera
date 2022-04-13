@@ -142,7 +142,7 @@ class qt(QMainWindow):
 
         self.pushButton_Analysis.clicked.connect(self.on_pushButton_Analysis)      
         self.pushButton_Wavelength.clicked.connect(self.on_pushButton_Wavelength) 
-        self.pushButton_Physicogical.clicked.connect(self.on_pushButton_Physicogical) 
+        self.pushButton_Physiological.clicked.connect(self.on_pushButton_Physiological) 
         
        
      # method for widgets
@@ -181,7 +181,7 @@ class qt(QMainWindow):
     #         ser = serial.Serial(self.ports[0],9600)
     #         self.label_11.setText(self.ports[0])
 
-#Port Detection END
+    #Port Detection END
 
 
 
@@ -216,8 +216,8 @@ class qt(QMainWindow):
   
 
 
-############################################################### First page Start #############################################
-#1.  pushButton_CameraOn_
+    ############################################################### First page Start #############################################
+    #1.  pushButton_CameraOn_
     def on_pushButton_CameraOn(self):  
         self.stop=False
         self.hdfSave=False
@@ -226,8 +226,8 @@ class qt(QMainWindow):
         self.label_CameraDisplay.setMovie(self.movie)
         self.startAnimation()
         self.label_Status.setText("Status:")
-        self.label_SuccesMessage.setText("Started!")
-        self.label_SuccesMessage.setStyleSheet('color: blue')
+        self.label_SuccessMessage.setText("Started!")
+        self.label_SuccessMessage.setStyleSheet('color: blue')
        
         self.on_camera()  
 
@@ -457,8 +457,8 @@ class qt(QMainWindow):
                         self.hdfSave=False
                         save=False
                         self.label_Status.setText("Status:")
-                        self.label_SuccesMessage.setText("Saved!")
-                        self.label_SuccesMessage.setStyleSheet('color: green')
+                        self.label_SuccessMessage.setText("Saved!")
+                        self.label_SuccessMessage.setStyleSheet('color: green')
                     except:
                         pass
                             # logger.log(logging.WARNING, "HDF5:Storage Queue is full!")
@@ -510,8 +510,8 @@ class qt(QMainWindow):
 #2. Camera Stop spin view Button
     def on_pushButton_CameraStop(self): 
         self.label_Status.setText("Status:")
-        self.label_SuccesMessage.setText("Stoped!")
-        self.label_SuccesMessage.setStyleSheet('color: red')
+        self.label_SuccessMessage.setText("Stoped!")
+        self.label_SuccessMessage.setStyleSheet('color: red')
         self.startAnimation() 
         self.stop=True
         self.camera.stop()       
@@ -540,8 +540,8 @@ class qt(QMainWindow):
         content=self.comboBoxDropDown.currentText()
         z=0
     
-# 7.  pushButton_Physicogical
-    def on_pushButton_Physicogical(self):   
+# 7.  pushButton_Physiological
+    def on_pushButton_Physiological(self):   
         self.blood_psio(self)
 
     #  @jit(nopython=True, fastmath=True, parallel=True)
