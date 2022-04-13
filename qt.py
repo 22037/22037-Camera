@@ -312,14 +312,10 @@ class qt(QMainWindow):
         data_cube_corr = np.zeros((14, 540, 720), 'uint16')
         frame = np.zeros((540,720), dtype=np.uint8)
 
-        #NEW - FIND BACKGROUND
+        #NEW
         bg_delta: tuple = (64, 64)
         bg_dx = bg_delta[1]
         bg_dy = bg_delta[0]
-        inten = np.zeros(14, dtype=np.uint16)
-        bg = np.zeros((4, 4), dtype=np.uint8)
-        index_array = np.arange(0, 14)
-        i=0
 
         #Camera configuration file
         #from configs.blackfly_configs  import configs
@@ -400,6 +396,19 @@ class qt(QMainWindow):
         @vectorize(['uint16(uint8, float32, uint8)'], nopython = True, fastmath = True)
         def correction(background, flatfield, data_cube):
             return np.multiply(np.subtract(data_cube,background),flatfield)
+        
+        #NEW
+        def sort_algorithm(data):
+            inten = np.sum(data[:,::bg_dx,::bg_dy], axis=(1,2))
+            background_indx = np.argmin(inten)
+
+            index_array = np.arange(0, 14)
+            array_plus_index = index_array + background_indx + 1
+            ind = array_plus_index%14
+
+            data = data[ind,:,:]
+
+            return data
 
         stop=self.stop
         i=0
@@ -413,7 +422,9 @@ class qt(QMainWindow):
             data_cube[frame_idx,:,:] = frame
             num_frames_received += 1
 
-            #NEW - FIND BACKGROUND            
+            #NEW   
+            if i==13:
+                data_cube = sort_algorithm(data_cube)         
 
             self.data_cube_corr = correction(background, flatfield, data_cube)
             self.data_cube_corr[frame_idx,:,:] = frame
