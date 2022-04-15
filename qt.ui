@@ -42,7 +42,7 @@
      <property name="leftMargin">
       <number>6</number>
      </property>
-     <item row="0" column="0">
+     <item row="1" column="0">
       <widget class="QTabWidget" name="tabWidget">
        <property name="enabled">
         <bool>true</bool>
@@ -60,7 +60,7 @@
         <attribute name="title">
          <string>Main Screen</string>
         </attribute>
-        <widget class="QPushButton" name="pushButton_23">
+        <widget class="QPushButton" name="pushButton_CameraOn">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -73,7 +73,7 @@
           <string>START</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_24">
+        <widget class="QPushButton" name="pushButton_CameraStop">
          <property name="geometry">
           <rect>
            <x>90</x>
@@ -86,7 +86,7 @@
           <string>STOP</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_25">
+        <widget class="QPushButton" name="pushButton_CameraSave">
          <property name="geometry">
           <rect>
            <x>170</x>
@@ -99,7 +99,7 @@
           <string>SAVE</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_26">
+        <widget class="QPushButton" name="pushButton_Analysis">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -112,7 +112,7 @@
           <string>ANALYSIS</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_27">
+        <widget class="QPushButton" name="pushButton_DefaultView">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -122,27 +122,39 @@
           </rect>
          </property>
          <property name="text">
-          <string>TARGET</string>
+          <string>DEFAULT  VIEW</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_28">
+        <widget class="QPushButton" name="pushButton_Wavelength">
          <property name="geometry">
           <rect>
-           <x>530</x>
-           <y>210</y>
-           <width>161</width>
-           <height>51</height>
+           <x>640</x>
+           <y>230</y>
+           <width>41</width>
+           <height>31</height>
           </rect>
          </property>
+         <property name="font">
+          <font>
+           <italic>false</italic>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="tabletTracking">
+          <bool>false</bool>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
-          <string>WAVELENGTH</string>
+          <string>OK</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_29">
+        <widget class="QPushButton" name="pushButton_Physicogical">
          <property name="geometry">
           <rect>
            <x>530</x>
-           <y>270</y>
+           <y>280</y>
            <width>161</width>
            <height>51</height>
           </rect>
@@ -151,7 +163,7 @@
           <string>PHYSICOGICAL DATA</string>
          </property>
         </widget>
-        <widget class="QLCDNumber" name="lcdNumber_3">
+        <widget class="QLCDNumber" name="lcdNumber_FPSin">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -161,7 +173,7 @@
           </rect>
          </property>
         </widget>
-        <widget class="QLCDNumber" name="lcdNumber_4">
+        <widget class="QLCDNumber" name="lcdNumber_FPSout">
          <property name="geometry">
           <rect>
            <x>620</x>
@@ -171,7 +183,7 @@
           </rect>
          </property>
         </widget>
-        <widget class="QLabel" name="label_33">
+        <widget class="QLabel" name="label_FPSInHeader">
          <property name="geometry">
           <rect>
            <x>530</x>
@@ -184,7 +196,7 @@
           <string>FPS IN</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_48">
+        <widget class="QLabel" name="label_FPSOutHeader">
          <property name="geometry">
           <rect>
            <x>620</x>
@@ -197,7 +209,7 @@
           <string>FPS OUT</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_49">
+        <widget class="QLabel" name="label_CameraDisplay">
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -210,38 +222,158 @@
           <string>.</string>
          </property>
         </widget>
-        <!-- <widget class="QPushButton" name="pushButton_30">
+        <widget class="QComboBox" name="comboBoxDropDown">
          <property name="geometry">
           <rect>
-           <x>260</x>
-           <y>340</y>
-           <width>101</width>
-           <height>41</height>
+           <x>540</x>
+           <y>230</y>
+           <width>91</width>
+           <height>31</height>
           </rect>
-         </property>
-         <property name="text">
-          <string>Desktop Camera</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_31">
+        <widget class="QLabel" name="label_Wavelength">
          <property name="geometry">
           <rect>
-           <x>370</x>
+           <x>540</x>
+           <y>200</y>
+           <width>141</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>WAVELENGTH</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_SuccesMessage">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>320</y>
+           <width>81</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Status">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>320</y>
+           <width>51</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_Background">
+         <property name="geometry">
+          <rect>
+           <x>350</x>
            <y>340</y>
-           <width>101</width>
-           <height>41</height>
+           <width>41</width>
+           <height>28</height>
           </rect>
          </property>
          <property name="text">
-          <string>Off Camera</string>
+          <string>Off</string>
          </property>
-        </widget> -->
+        </widget>
+        <widget class="QPushButton" name="pushButton_Flatfield">
+         <property name="geometry">
+          <rect>
+           <x>480</x>
+           <y>340</y>
+           <width>41</width>
+           <height>28</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Off</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_Databinning">
+         <property name="geometry">
+          <rect>
+           <x>590</x>
+           <y>340</y>
+           <width>41</width>
+           <height>28</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Off</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Background">
+         <property name="geometry">
+          <rect>
+           <x>400</x>
+           <y>350</y>
+           <width>71</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Background</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Flatfield">
+         <property name="geometry">
+          <rect>
+           <x>530</x>
+           <y>350</y>
+           <width>61</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Flat Field</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Databinning">
+         <property name="geometry">
+          <rect>
+           <x>640</x>
+           <y>350</y>
+           <width>71</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Data Binning</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QWidget" name="SerialMonitor">
         <attribute name="title">
          <string>Serial Monitor</string>
         </attribute>
-        <widget class="QTextEdit" name="textEdit_3">
+        <widget class="QTextEdit" name="textEdit_DisplayCommData">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -251,7 +383,7 @@
           </rect>
          </property>
         </widget>
-        <widget class="QTextEdit" name="textEdit_2">
+        <widget class="QTextEdit" name="textEdit_TextSendDisplay">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -261,7 +393,7 @@
           </rect>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="pushButton_SendComm">
          <property name="geometry">
           <rect>
            <x>430</x>
@@ -311,14 +443,14 @@
          </property>
          <layout class="QFormLayout" name="formLayout">
           <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="label_PortAvail">
             <property name="text">
              <string>Port Avaliable:</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="label_11">
+           <widget class="QLabel" name="label_PortDisplay">
             <property name="text">
              <string>-</string>
             </property>
@@ -337,14 +469,14 @@
          </property>
          <layout class="QFormLayout" name="formLayout_2">
           <item row="0" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="label_PortConnected">
             <property name="text">
              <string>Port Status</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="label_PortStatus">
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -361,12 +493,12 @@
            <x>510</x>
            <y>50</y>
            <width>197</width>
-           <height>191</height>
+           <height>203</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
-           <widget class="QLabel" name="label_10">
+           <widget class="QLabel" name="label_DisplayOption">
             <property name="text">
              <string>Connection Options:</string>
             </property>
@@ -375,14 +507,14 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="pushButton_StopComm">
               <property name="text">
                <string>STOP</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="pushButton_StartComm">
               <property name="text">
                <string>START</string>
               </property>
@@ -391,7 +523,7 @@
            </layout>
           </item>
           <item>
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="label_Percentage">
             <property name="text">
              <string>Connection Percentage Status:</string>
             </property>
@@ -405,7 +537,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="textEdit">
+           <widget class="QTextEdit" name="textEdit_displayMessage">
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -418,7 +550,7 @@
         <attribute name="title">
          <string>About</string>
         </attribute>
-        <widget class="QTextBrowser" name="textBrowser">
+        <widget class="QTextBrowser" name="textBrowser_About">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -431,7 +563,7 @@
           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:16px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; background-color:#ffffff;&quot;&gt;&lt;span style=&quot; font-family:'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji'; font-size:8pt; color:#24292f; background-color:#ffffff;&quot;&gt;Run&lt;/span&gt;&lt;span style=&quot; font-family:'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji'; font-size:8pt; color:#24292f;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace'; font-size:8pt; color:#24292f;&quot;&gt;capture_display.py&lt;/span&gt;&lt;span style=&quot; font-family:'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji'; font-size:8pt; color:#24292f;&quot;&gt; from &lt;/span&gt;&lt;span style=&quot; font-family:'ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace'; font-size:8pt; color:#24292f;&quot;&gt;.\examples&lt;/span&gt;&lt;span style=&quot; font-family:'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji'; font-size:8pt; color:#24292f;&quot;&gt; You need to set the proper config file in the program. You should not need to edit python files in capture or streamer folder.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:24px; margin-bottom:16px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:125%; background-color:#ffffff;&quot;&gt;&lt;a name=&quot;user-content-example-programs&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji'; font-size:8pt; font-weight:600; color:#24292f;&quot;&gt;E&lt;/span&gt;&lt;span style=&quot; font-family:'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji'; font-size:8pt; font-weight:600; color:#24292f;&quot;&gt;xample Programs&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:16px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; background-color:#ffffff;&quot;&gt;&lt;span style=&quot; font-family:'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji'; font-size:8pt; font-weight:600; color:#24292f;&quot;&gt;Display&lt;/span&gt;&lt;span style=&quot; font-family:'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji'; font-size:8pt; color:#24292f;&quot;&gt;:&lt;br /&gt;In general display should occur in main program. OpenCV requires waitkey to be executed in order to update the display and limits update rate to about 50-90 fps.&lt;/span&gt;&lt;/p&gt;
@@ -443,7 +575,7 @@ p, li { white-space: pre-wrap; }
         <attribute name="title">
          <string>Help</string>
         </attribute>
-        <widget class="QTextBrowser" name="textBrowser_2">
+        <widget class="QTextBrowser" name="textBrowser_Help">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -456,9 +588,8 @@ p, li { white-space: pre-wrap; }
           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;Contact &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;University of Arizona&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
@@ -474,7 +605,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>748</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

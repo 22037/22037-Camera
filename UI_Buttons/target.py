@@ -5,6 +5,8 @@
 #requires correction function
 
 def target(self, data_cube):
+    x = False
+
     display_interval = 1./300.
     i=0
 

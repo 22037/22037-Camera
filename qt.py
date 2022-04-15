@@ -142,7 +142,19 @@ class qt(QMainWindow):
 
         self.pushButton_Analysis.clicked.connect(self.on_pushButton_Analysis)      
         self.pushButton_Wavelength.clicked.connect(self.on_pushButton_Wavelength) 
-        self.pushButton_Physicogical.clicked.connect(self.on_pushButton_Physicogical) 
+        self.pushButton_Physicogical.clicked.connect(self.on_pushButton_Physicogical)
+
+        self.pushButton_Background.setCheckable(True)
+        self.pushButton_Flatfield.setCheckable(True)
+        self.pushButton_Databinning.setCheckable(True)
+
+        self.pushButton_Background.clicked.connect(self.on_pushButton_Background)
+        self.pushButton_Flatfield.clicked.connect(self.on_pushButton_Flatfield)
+        self.pushButton_Databinning.clicked.connect(self.on_pushButton_Databinning)
+
+        self.pushButton_Background.setStyleSheet("background-color : lightgrey")
+        self.pushButton_Flatfield.setStyleSheet("background-color : lightgrey")
+        self.pushButton_Databinning.setStyleSheet("background-color : lightgrey") 
         
        
      # method for widgets
@@ -543,6 +555,35 @@ class qt(QMainWindow):
 # 7.  pushButton_Physicogical
     def on_pushButton_Physicogical(self):   
         self.blood_psio(self)
+
+# 8. check buttons 
+    def on_pushButton_Background(self):
+        if self.pushButton_Background.isChecked():
+            self.pushButton_Background.setStyleSheet("background-color : limegreen")
+            self.pushButton_Background.setText("On")
+            self.onBackground = True
+        else:
+            self.pushButton_Background.setStyleSheet("background-color : lightgrey")
+            self.pushButton_Background.setText("Off")
+            self.onBackground = False 
+    def on_pushButton_Flatfield(self):
+        if self.pushButton_Flatfield.isChecked():
+            self.pushButton_Flatfield.setStyleSheet("background-color : limegreen")
+            self.pushButton_Flatfield.setText("On")
+            self.onFlatfield = True
+        else:
+            self.pushButton_Flatfield.setStyleSheet("background-color : lightgrey")
+            self.pushButton_Flatfield.setText("Off")
+            self.onFlatfield = False
+    def on_pushButton_Databinning(self):
+        if self.pushButton_Databinning.isChecked():
+            self.pushButton_Databinning.setStyleSheet("background-color : limegreen")
+            self.pushButton_Databinning.setText("On")
+            self.onDatabinning = True
+        else:
+            self.pushButton_Databinning.setStyleSheet("background-color : lightgrey")
+            self.pushButton_Databinning.setText("Off")
+            self.onDatabinning = False
 
     #  @jit(nopython=True, fastmath=True, parallel=True)
     def blood_psio(self):
