@@ -7,7 +7,7 @@ configs = {
     'camera_res'      : (720, 540),     # image width & height, can read ROI
     'exposure'        : 1750,           # in microseconds, -1 = autoexposure
     'autoexposure'    : 0,              # 0,1
-    'fps'             : 500,            # 
+    'fps'             : 50,            # 
     'binning'         : (1,1),          # 1,2 or 4
     'offset'          : (0,0),          #
     'adc'             : 8,              # 8,10,12,14 bit

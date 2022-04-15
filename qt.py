@@ -1,6 +1,7 @@
 __author__ = 'Devesh Khosla - github.com/dekhosla'
 
 import sys, serial, serial.tools.list_ports,warnings
+from cv2 import detail_SeamFinder
 from xmlrpc.client import Boolean
 from tracemalloc import stop
 
@@ -163,8 +164,8 @@ class qt(QMainWindow):
      # method for widgets
     def UiComponents(self):
 
-        channel_list = ["All","Channel_1", "Channel_2", "Channel_3", "Channel_4","Channel_5", "Channel_6", "Channel_7", "Channel_8",
-        "Channel_9", "Channel_10", "Channel_11", "Channel_12","Channel_13", "Channel_14"]
+        channel_list = ["All","C0_365", "C1_460", "C2_525", "C3_590","C4_623", "C5_660", "C6_740", "C7_850",
+        "C8_950", "C9_1050", "C10_White", "C11_420","C12_420", "C13_Background"]
  
         # adding list of items to combo box
         self.comboBoxDropDown.addItems(channel_list)
@@ -246,6 +247,7 @@ class qt(QMainWindow):
         self.onBackground = False
         self.onFlatfield=False
         self.onDatabinning =False
+        self.wavelengthSelected=15
         self.data_cube_corr = np.zeros((14, 540, 720), 'uint16')
         self.frame = np.zeros((540,720), dtype=np.uint8)
        
@@ -347,6 +349,7 @@ class qt(QMainWindow):
 
                 onFlatfield= self.onFlatfield 
                 onBackground = self.onBackground
+                self.background = np.zeros((540, 720), dtype=np.uint8)
 
                 # A. Condition for Flat field and Bac 
                 if onFlatfield or onBackground:
@@ -357,7 +360,7 @@ class qt(QMainWindow):
                     elif onFlatfield:
                         self.data_cube_corr = np.multiply(self.data_cube,self.flatfield)
                     else:
-                       self.data_cube_corr = np.multiply(np.subtract(self.data_cube,self.background))
+                       self.data_cube_corr = np.subtract(self.data_cube,self.background)
 
 
                 # B. Condition for On binning
@@ -412,8 +415,12 @@ class qt(QMainWindow):
                 last_time = current_time
         
             if (current_time - last_display) >= display_interval:
-                
-                display_frame = np.cast['uint8'](self.data_cube_corr[1,:,:])
+                selChannel=self.wavelengthSelected
+                if selChannel == 15:
+                    display_frame = np.cast['uint8'](self.data_cube_corr[:,:,:])
+                else:
+                    display_frame = np.cast['uint8'](self.data_cube_corr[selChannel,:,:])
+
                 # This section creates significant delay and we need to throttle the display to maintain max capture and storage rate
                 cv2.putText(display_frame,"Capture FPS:{} [Hz]".format(self.camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
                 cv2.putText(display_frame,"Display FPS:{} [Hz]".format(measured_dps),        textLocation1, font, fontScale, 255, lineType)
@@ -472,7 +479,7 @@ class qt(QMainWindow):
         flatfield[13,:,:] = fit13
         self.flatfield=flatfield
 
-        self.background = np.zeros((540, 720), dtype=np.uint8)
+    
        
     # sorting function
     def sort_algorithm(self):        
@@ -545,8 +552,12 @@ class qt(QMainWindow):
 # 6. Okay Button pushButton_Wavelength
     def on_pushButton_Wavelength(self):   
         content=self.comboBoxDropDown.currentText()
-        self.wavelengthSelected=content
-        z=0
+        if(content=='All'):
+           self.wavelengthSelected=15
+        else:
+            selected=content.split("_", 1)
+            self.wavelengthSelected=int(selected[0].split("C",1)[1])
+           
     
 # 7.  pushButton_Physicogical
     def on_pushButton_Physicogical(self):   
