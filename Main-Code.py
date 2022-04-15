@@ -161,9 +161,11 @@ def bin20(arr_in):
 def correction(background, flatfield, data_cube):
     return np.multiply(np.subtract(data_cube,background),flatfield)
 
-def sort_algorithm(data):
+def sort_algorithm(data, background):
     inten = np.sum(data[:,::bg_dx,::bg_dy], axis=(1,2))
     background_indx = np.argmin(inten)
+
+    background = data[background_indx,:,:]
 
     #determine curve fit of background in real time - takes too long
     #flatfield[13,:,:] = wavelength(data_cube[background_indx,:,:])
@@ -174,7 +176,7 @@ def sort_algorithm(data):
 
     data = data[ind,:,:]
 
-    return data
+    return data, background
 
 def wavelength(background):
     width  = 720
@@ -230,7 +232,7 @@ while(not stop):
 
     #NEW - FIND BACKGROUND
     if i==13:
-        data_cube = sort_algorithm(data_cube)
+        data_cube, background = sort_algorithm(data_cube, background)
 
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
@@ -304,7 +306,7 @@ while(not stop):
         last_time = current_time
  
     if (current_time - last_display) >= display_interval:
-        display_frame = np.cast['uint8'](data_cube_corr[13,:,:])
+        display_frame = np.cast['uint8'](data_cube_corr[1,:,:])
         # This section creates significant delay and we need to throttle the display to maintain max capture and storage rate
         cv2.putText(display_frame,"Capture FPS:{} [Hz]".format(camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
         cv2.putText(display_frame,"Display FPS:{} [Hz]".format(measured_dps),        textLocation1, font, fontScale, 255, lineType)
