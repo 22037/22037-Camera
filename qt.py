@@ -410,9 +410,11 @@ class qt(QMainWindow):
             return np.multiply(np.subtract(data_cube,background),flatfield)
         
         #NEW
-        def sort_algorithm(data):
+        def sort_algorithm(data, background):
             inten = np.sum(data[:,::bg_dx,::bg_dy], axis=(1,2))
             background_indx = np.argmin(inten)
+
+            background = data[background_indx,:,:]
 
             index_array = np.arange(0, 14)
             array_plus_index = index_array + background_indx + 1
@@ -420,7 +422,7 @@ class qt(QMainWindow):
 
             data = data[ind,:,:]
 
-            return data
+            return data, background
 
         stop=self.stop
         i=0
@@ -434,12 +436,11 @@ class qt(QMainWindow):
             data_cube[frame_idx,:,:] = frame
             num_frames_received += 1
 
-            #NEW   
+            #NEW
             if i==13:
-                data_cube = sort_algorithm(data_cube)         
+                data_cube, background = sort_algorithm(data_cube, background)
+                data_cube_corr = correction(background, flatfield, data_cube)
 
-            self.data_cube_corr = correction(background, flatfield, data_cube)
-            self.data_cube_corr[frame_idx,:,:] = frame
             frame_idx += 1
 
             while not self.camera.log.empty():
@@ -498,7 +499,7 @@ class qt(QMainWindow):
         
             if (current_time - last_display) >= display_interval:
                 
-                display_frame = np.cast['uint8'](self.data_cube_corr[13,:,:])
+                display_frame = np.cast['uint8'](self.data_cube_corr[1,:,:])
                 # This section creates significant delay and we need to throttle the display to maintain max capture and storage rate
                 cv2.putText(display_frame,"Capture FPS:{} [Hz]".format(self.camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
                 cv2.putText(display_frame,"Display FPS:{} [Hz]".format(measured_dps),        textLocation1, font, fontScale, 255, lineType)
