@@ -161,11 +161,11 @@ def bin20(arr_in):
 def correction(background, flatfield, data_cube):
     return np.multiply(np.subtract(data_cube,background),flatfield)
 
-def sort_algorithm(data, background):
+def sort_algorithm(data):
     inten = np.sum(data[:,::bg_dx,::bg_dy], axis=(1,2))
     background_indx = np.argmin(inten)
 
-    background = data[background_indx,:,:]
+    #background = data[background_indx,:,:]
 
     #determine curve fit of background in real time - takes too long
     #flatfield[13,:,:] = wavelength(data_cube[background_indx,:,:])
@@ -176,9 +176,9 @@ def sort_algorithm(data, background):
 
     data = data[ind,:,:]
 
-    return data, background
+    return data
 
-def wavelength(background):
+""" def wavelength(background):
     width  = 720
     height = 540
     xmin = 0
@@ -217,7 +217,7 @@ def wavelength(background):
     # curve fit divided by maximum image value to generate matrix from 0 to 1
     fit = curvefit/255.
 
-    return(fit)
+    return(fit) """
 
 # Main Loop
 stop = False
@@ -234,7 +234,6 @@ while(not stop):
     if i==13:
         data_cube = sort_algorithm(data_cube)
         data_cube_corr = correction(background, flatfield, data_cube)
-
 
     #data_cube_corr[frame_idx,:,:] = frame
     frame_idx += 1
