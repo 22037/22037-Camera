@@ -231,9 +231,10 @@ while(not stop):
     #NEW - FIND BACKGROUND
     if i==13:
         data_cube = sort_algorithm(data_cube)
+        data_cube_corr = correction(background, flatfield, data_cube)
 
-    data_cube_corr = correction(background, flatfield, data_cube)
-    data_cube_corr[frame_idx,:,:] = frame
+
+    #data_cube_corr[frame_idx,:,:] = frame
     frame_idx += 1
 
     while not camera.log.empty():
@@ -304,7 +305,7 @@ while(not stop):
         last_time = current_time
  
     if (current_time - last_display) >= display_interval:
-        display_frame = np.cast['uint8'](data_cube_corr[13,:,:])
+        display_frame = np.cast['uint8'](data_cube_corr[5,:,:])
         # This section creates significant delay and we need to throttle the display to maintain max capture and storage rate
         cv2.putText(display_frame,"Capture FPS:{} [Hz]".format(camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
         cv2.putText(display_frame,"Display FPS:{} [Hz]".format(measured_dps),        textLocation1, font, fontScale, 255, lineType)
