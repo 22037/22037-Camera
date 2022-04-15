@@ -240,6 +240,11 @@ class qt(QMainWindow):
         self.label_Status.setText("Status:")
         self.label_SuccesMessage.setText("Started!")
         self.label_SuccesMessage.setStyleSheet('color: blue')
+        self.onBackground = False
+        self.onFlatfield=False
+        self.onDatabinning =False
+        self.data_cube_corr = np.zeros((14, 540, 720), 'uint16')
+        self.frame = np.zeros((540,720), dtype=np.uint8)
        
         self.on_camera()  
 
@@ -258,6 +263,9 @@ class qt(QMainWindow):
         counter      = bin_time  = 0  
         min_fr = 0.0
         max_fr = 1.0
+        self.data_cube_corr = np.zeros((14, 540, 720), 'uint16')
+        self.frame = np.zeros((540,720), dtype=np.uint8)
+        self.data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
         
         # stop=pyqtSignal(Boolean)
 
@@ -282,52 +290,57 @@ class qt(QMainWindow):
         #read in curvefit files
         #background=np.loadtxt('background', dtype='uint8', delimiter=',')
 
-        #images are stored in BSstandard folder
-        fit0=np.loadtxt('fit0_2', dtype='float32', delimiter=',')
-        fit1=np.loadtxt('fit1_2', dtype='float32', delimiter=',')
-        fit2=np.loadtxt('fit2_2', dtype='float32', delimiter=',')
-        fit3=np.loadtxt('fit3_2', dtype='float32', delimiter=',')
-        fit4=np.loadtxt('fit4_2', dtype='float32', delimiter=',')
-        fit5=np.loadtxt('fit5_2', dtype='float32', delimiter=',')
-        fit6=np.loadtxt('fit6_2', dtype='float32', delimiter=',')
-        fit7=np.loadtxt('fit7_2', dtype='float32', delimiter=',')
-        fit8=np.loadtxt('fit8_2', dtype='float32', delimiter=',')
-        fit9=np.loadtxt('fit9_2', dtype='float32', delimiter=',')
-        fit10=np.loadtxt('fit10_2', dtype='float32', delimiter=',')
-        #comment out 11 and 13
-        fit11=np.loadtxt('fit12_2', dtype='float32', delimiter=',')
-        fit12=np.loadtxt('fit12_2', dtype='float32', delimiter=',')
-        fit13=np.loadtxt('background', dtype='float32', delimiter=',')
 
-        #Processing
-        looptime = 0.0
-        use_queue = True
-        data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
-        flatfield = np.zeros((14, 540, 720), dtype=np.float32)
-        flatfield[0,:,:] = fit0
-        flatfield[1,:,:] = fit1
-        flatfield[2,:,:] = fit2
-        flatfield[3,:,:] = fit3
-        flatfield[4,:,:] = fit4
-        flatfield[5,:,:] = fit5
-        flatfield[6,:,:] = fit6
-        flatfield[7,:,:] = fit7
-        flatfield[8,:,:] = fit8
-        flatfield[9,:,:] = fit9
-        flatfield[10,:,:] = fit10
-        flatfield[11,:,:] = fit11
-        flatfield[12,:,:] = fit12
-        flatfield[13,:,:] = fit13
-        background = np.zeros((540, 720), dtype=np.uint8)
-        #background = plt.imread("C13-BKGND.tiff")
-        #flatfield = np.cast['uint8'](2**8.*np.random.random((540,720)))
-        data_cube_corr = np.zeros((14, 540, 720), 'uint16')
-        frame = np.zeros((540,720), dtype=np.uint8)
+      
+
+        # #images are stored in BSstandard folder
+        # fit0=np.loadtxt('fit0_2', dtype='float32', delimiter=',')
+        # fit1=np.loadtxt('fit1_2', dtype='float32', delimiter=',')
+        # fit2=np.loadtxt('fit2_2', dtype='float32', delimiter=',')
+        # fit3=np.loadtxt('fit3_2', dtype='float32', delimiter=',')
+        # fit4=np.loadtxt('fit4_2', dtype='float32', delimiter=',')
+        # fit5=np.loadtxt('fit5_2', dtype='float32', delimiter=',')
+        # fit6=np.loadtxt('fit6_2', dtype='float32', delimiter=',')
+        # fit7=np.loadtxt('fit7_2', dtype='float32', delimiter=',')
+        # fit8=np.loadtxt('fit8_2', dtype='float32', delimiter=',')
+        # fit9=np.loadtxt('fit9_2', dtype='float32', delimiter=',')
+        # fit10=np.loadtxt('fit10_2', dtype='float32', delimiter=',')
+        # #comment out 11 and 13
+        # fit11=np.loadtxt('fit12_2', dtype='float32', delimiter=',')
+        # fit12=np.loadtxt('fit12_2', dtype='float32', delimiter=',')
+        # fit13=np.loadtxt('background', dtype='float32', delimiter=',')
+
+        # #Processing
+        # looptime = 0.0
+        # use_queue = True
+        # data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
+        # flatfield = np.zeros((14, 540, 720), dtype=np.float32)
+        # flatfield[0,:,:] = fit0
+        # flatfield[1,:,:] = fit1
+        # flatfield[2,:,:] = fit2
+        # flatfield[3,:,:] = fit3
+        # flatfield[4,:,:] = fit4
+        # flatfield[5,:,:] = fit5
+        # flatfield[6,:,:] = fit6
+        # flatfield[7,:,:] = fit7
+        # flatfield[8,:,:] = fit8
+        # flatfield[9,:,:] = fit9
+        # flatfield[10,:,:] = fit10
+        # flatfield[11,:,:] = fit11
+        # flatfield[12,:,:] = fit12
+        # flatfield[13,:,:] = fit13
+        # background = np.zeros((540, 720), dtype=np.uint8)
+        # #background = plt.imread("C13-BKGND.tiff")
+        # #flatfield = np.cast['uint8'](2**8.*np.random.random((540,720)))
+        # data_cube_corr = np.zeros((14, 540, 720), 'uint16')
+        # frame = np.zeros((540,720), dtype=np.uint8)
+        # self.data_cube_corr = np.zeros((14, 540, 720), 'uint16')
+        # self.frame = np.zeros((540,720), dtype=np.uint8)
 
         #NEW
-        bg_delta: tuple = (64, 64)
-        bg_dx = bg_delta[1]
-        bg_dy = bg_delta[0]
+        # bg_delta: tuple = (64, 64)
+        # bg_dx = bg_delta[1]
+        # bg_dy = bg_delta[0]
 
         #Camera configuration file
         #from configs.blackfly_configs  import configs
@@ -367,24 +380,24 @@ class qt(QMainWindow):
         print("Getting Images")
         self.camera.start()
                 
-        # Initialize Variables
-        frame_idx              = 0  # index to create data cube out of individual frames
-        num_cubes_stored       = 0  # keep track of data cubes sent to storage
-        num_cubes_generated    = 0  # keep track of data cubes generated
-        last_time              = time.perf_counter() # keep track of time to dispay performance
-        last_display           = time.perf_counter() # keeo track of time to display images
-        num_frames_received    = 0  # keep track of how many captured frames reach the main program
-        num_frames_displayed   = 0  # keep track of how many frames are displayed
-        measured_dps           = 0  # computed in main thread, number of frames displayed per second
-        proc_time              = 0 
-        counter      = bin_time  = 0  
-        min_fr = 0.0
-        max_fr = 1.0
+        # # Initialize Variables
+        # frame_idx              = 0  # index to create data cube out of individual frames
+        # num_cubes_stored       = 0  # keep track of data cubes sent to storage
+        # num_cubes_generated    = 0  # keep track of data cubes generated
+        # last_time              = time.perf_counter() # keep track of time to dispay performance
+        # last_display           = time.perf_counter() # keeo track of time to display images
+        # num_frames_received    = 0  # keep track of how many captured frames reach the main program
+        # num_frames_displayed   = 0  # keep track of how many frames are displayed
+        # measured_dps           = 0  # computed in main thread, number of frames displayed per second
+        # proc_time              = 0 
+        # counter      = bin_time  = 0  
+        # min_fr = 0.0
+        # max_fr = 1.0
 
-        # Reducing the image resolution by binning (summing up pixels)
-        bin_x=20
-        bin_y=20
-        scale = (bin_x*bin_y*255)
+        # # Reducing the image resolution by binning (summing up pixels)
+        # bin_x=20
+        # bin_y=20
+        # scale = (bin_x*bin_y*255)
 
         # Binning 20 pixels of the 8bit images
         @jit(nopython=True, fastmath=True, parallel=True)
@@ -409,25 +422,9 @@ class qt(QMainWindow):
         def correction(background, flatfield, data_cube):
             return np.multiply(np.subtract(data_cube,background),flatfield)
         
-        #NEW
-        def sort_algorithm(data, background):
-            inten = np.sum(data[:,::bg_dx,::bg_dy], axis=(1,2))
-            background_indx = np.argmin(inten)
+      
 
-            background = data[background_indx,:,:]
-
-            #determine curve fit of background in real time - takes too long
-            #flatfield[13,:,:] = wavelength(data_cube[background_indx,:,:])
-
-            index_array = np.arange(0, 14)
-            array_plus_index = index_array + background_indx + 1
-            ind = array_plus_index%14
-
-            data = data[ind,:,:]
-
-            return data, background
-        
-        #this code determines the curve fit of the background
+  #this code determines the curve fit of the background
         """ def wavelength(background):
         width  = 720
         height = 540
@@ -467,8 +464,8 @@ class qt(QMainWindow):
         # curve fit divided by maximum image value to generate matrix from 0 to 1
         fit = curvefit/255.
 
-        return(fit) """
-
+        return(fit) """ 
+        
         stop=self.stop
         i=0
         while(not stop):
@@ -478,13 +475,24 @@ class qt(QMainWindow):
         
             # wait for new image
             (self.frame_time, frame) = self.camera.capture.get(block=True, timeout=None)
-            data_cube[frame_idx,:,:] = frame
+            self.data_cube[frame_idx,:,:] = frame
             num_frames_received += 1
 
-            #NEW
-            if i==13:
-                data_cube, background = sort_algorithm(data_cube, background)
-                data_cube_corr = correction(background, flatfield, data_cube)
+            #condition for flatfield on or off
+            onFlatfield= self.onFlatfield 
+            onBackground =self.onBackground
+
+            # if onFlatfield or onBackground:
+            #     if i==13:                     
+            #         self.data_cube, self.background = self.sort_algorithm()
+
+            #         if onFlatfield and onBackground:                         
+            #              self.data_cube_corr = np.multiply(np.subtract(self.data_cube,self.background),self.flatfield)
+            #         elif onFlatfield:
+            #             self.data_cube_corr = np.multiply(self.data_cube,self.flatfield)
+            #         else:
+            #            self.data_cube_corr = np.multiply(np.subtract(self.data_cube,self.background))
+ 
 
             frame_idx += 1
 
@@ -496,6 +504,27 @@ class qt(QMainWindow):
             if frame_idx >= 14: # 0...13 is populated
                 frame_idx = 0  
                 num_cubes_stored = 0
+
+                onFlatfield= self.onFlatfield 
+                onBackground =self.onBackground
+
+                # A. Condition for Flat field and Bac 
+                if onFlatfield or onBackground:
+                    self.data_cube, self.background = self.sort_algorithm()
+
+                    if onFlatfield and onBackground:                         
+                         self.data_cube_corr = np.multiply(np.subtract(self.data_cube,self.background),self.flatfield)
+                    elif onFlatfield:
+                        self.data_cube_corr = np.multiply(self.data_cube,self.flatfield)
+                    else:
+                       self.data_cube_corr = np.multiply(np.subtract(self.data_cube,self.background))
+
+
+                # B. Condition for On binning
+
+                onDatabinning= self.onDatabinning
+                if onDatabinning:
+                    self.data_cube_corr = self.bin20()
                              
                     # HDF5 
                 save=self.hdfSave
@@ -550,7 +579,7 @@ class qt(QMainWindow):
                 cv2.putText(display_frame,"Display FPS:{} [Hz]".format(measured_dps),        textLocation1, font, fontScale, 255, lineType)
                 # cv2.imshow(window_name, display_frame)
                 Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)               
-                FlippedImage = cv2.flip(Image1, 1)
+                FlippedImage = cv2.flip(Image1, 1)               
                 ConvertToQtFormat = QtGui.QImage(FlippedImage.data, FlippedImage.shape[1],FlippedImage.shape[0], QImage.Format_RGB888)          
                 self.label_CameraDisplay.setPixmap(QPixmap.fromImage(ConvertToQtFormat))                
                 self.lcdNumber_FPSin.display(self.camera.measured_fps)
@@ -562,7 +591,90 @@ class qt(QMainWindow):
                 last_display = current_time
                 num_frames_displayed += 1
                 self.stopAnimation()
+
+     #curve fit function   
+    def curveFitFlatField(self):
+         #images are stored in BSstandard folder
+        fit0=np.loadtxt('fit0_2', dtype='float32', delimiter=',')
+        fit1=np.loadtxt('fit1_2', dtype='float32', delimiter=',')
+        fit2=np.loadtxt('fit2_2', dtype='float32', delimiter=',')
+        fit3=np.loadtxt('fit3_2', dtype='float32', delimiter=',')
+        fit4=np.loadtxt('fit4_2', dtype='float32', delimiter=',')
+        fit5=np.loadtxt('fit5_2', dtype='float32', delimiter=',')
+        fit6=np.loadtxt('fit6_2', dtype='float32', delimiter=',')
+        fit7=np.loadtxt('fit7_2', dtype='float32', delimiter=',')
+        fit8=np.loadtxt('fit8_2', dtype='float32', delimiter=',')
+        fit9=np.loadtxt('fit9_2', dtype='float32', delimiter=',')
+        fit10=np.loadtxt('fit10_2', dtype='float32', delimiter=',')
+        #comment out 11 and 13
+        fit11=np.loadtxt('fit12_2', dtype='float32', delimiter=',')
+        fit12=np.loadtxt('fit12_2', dtype='float32', delimiter=',')
+        fit13=np.loadtxt('background', dtype='float32', delimiter=',')
         
+          #Processing
+        looptime = 0.0
+        use_queue = True
+        data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
+        flatfield = np.zeros((14, 540, 720), dtype=np.float32)
+        flatfield[0,:,:] = fit0
+        flatfield[1,:,:] = fit1
+        flatfield[2,:,:] = fit2
+        flatfield[3,:,:] = fit3
+        flatfield[4,:,:] = fit4
+        flatfield[5,:,:] = fit5
+        flatfield[6,:,:] = fit6
+        flatfield[7,:,:] = fit7
+        flatfield[8,:,:] = fit8
+        flatfield[9,:,:] = fit9
+        flatfield[10,:,:] = fit10
+        flatfield[11,:,:] = fit11
+        flatfield[12,:,:] = fit12
+        flatfield[13,:,:] = fit13
+        self.flatfield=flatfield
+
+        self.background = np.zeros((540, 720), dtype=np.uint8)
+       
+    # sorting function
+    def sort_algorithm(self):        
+            bg_delta: tuple = (64, 64)
+            bg_dx = bg_delta[1]
+            bg_dy = bg_delta[0]
+            inten = np.sum(self.data_cube[:,::bg_dx,::bg_dy], axis=(1,2))
+            background_indx = np.argmin(inten)
+
+            background = self.data_cube[background_indx,:,:]
+
+            #determine curve fit of background in real time - takes too long
+            #flatfield[13,:,:] = wavelength(data_cube[background_indx,:,:])
+
+            index_array = np.arange(0, 14)
+            array_plus_index = index_array + background_indx + 1
+            ind = array_plus_index%14
+
+            self.data_cube = self.data_cube[ind,:,:]
+
+            return self.data_cube, self.background
+            
+    def bin20(self):
+        arr_in=self.data_cube_corr
+        m,n,o   = np.shape(arr_in)
+        arr_tmp = np.empty((m//20,n,o), dtype='uint16')
+        arr_out = np.empty((m//20,n//20,o), dtype='uint32')
+        for i in prange(m//20):
+            arr_tmp[i,:,:] =  arr_in[i*20,:,:]    + arr_in[i*20+1,:,:]  + arr_in[i*20+2,:,:]  + arr_in[i*20+3,:,:]  + arr_in[i*20+4,:,:]  + arr_in[i*20+5,:,:]  + \
+                                arr_in[i*20+6,:,:]  + arr_in[i*20+7,:,:]  + arr_in[i*20+8,:,:]  + arr_in[i*20+9,:,:]  + arr_in[i*20+10,:,:] + arr_in[i*20+11,:,:] + \
+                                arr_in[i*20+12,:,:] + arr_in[i*20+13,:,:] + arr_in[i*20+14,:,:] + arr_in[i*20+15,:,:] + arr_in[i*20+16,:,:] + arr_in[i*20+17,:,:] + \
+                                arr_in[i*20+18,:,:] + arr_in[i*20+19,:,:]
+
+        for j in prange(n//20):
+             arr_out[:,j,:]  = arr_tmp[:,j*20,:]    + arr_tmp[:,j*20+1,:]  + arr_tmp[:,j*20+2,:]  + arr_tmp[:,j*20+3,:]  + arr_tmp[:,j*10+4,:]  + arr_tmp[:,j*20+5,:]  + \
+                                arr_tmp[:,j*20+6,:]  + arr_tmp[:,j*20+7,:]  + arr_tmp[:,j*20+8,:]  + arr_tmp[:,j*20+9,:]  + arr_tmp[:,j*20+10,:] + arr_tmp[:,j*20+11,:] + \
+                                arr_tmp[:,j*20+12,:] + arr_tmp[:,j*20+13,:] + arr_tmp[:,j*10+14,:] + arr_tmp[:,j*20+15,:] + arr_tmp[:,j*20+16,:] + arr_tmp[:,j*20+17,:] + \
+                                arr_tmp[:,j*20+18,:] + arr_tmp[:,j*20+19,:] 
+        self.data_cube_corr= arr_out
+        return self.data_cube_corr
+
+ 
     ############################################################END CAMERA CODE     
 
 #2. Camera Stop spin view Button
@@ -593,9 +705,10 @@ class qt(QMainWindow):
 #  5.  Analysis on_pushButton_Analysis_clicked
     def on_pushButton_Analysis(self):        
         z=0
-# 6. Okay Burron pushButton_Wavelength
+# 6. Okay Button pushButton_Wavelength
     def on_pushButton_Wavelength(self):   
         content=self.comboBoxDropDown.currentText()
+        self.wavelengthSelected=content
         z=0
     
 # 7.  pushButton_Physicogical
@@ -612,15 +725,18 @@ class qt(QMainWindow):
             self.pushButton_Background.setStyleSheet("background-color : lightgrey")
             self.pushButton_Background.setText("Off")
             self.onBackground = False 
+
     def on_pushButton_Flatfield(self):
         if self.pushButton_Flatfield.isChecked():
             self.pushButton_Flatfield.setStyleSheet("background-color : limegreen")
             self.pushButton_Flatfield.setText("On")
+            self.curveFitFlatField()
             self.onFlatfield = True
         else:
             self.pushButton_Flatfield.setStyleSheet("background-color : lightgrey")
             self.pushButton_Flatfield.setText("Off")
             self.onFlatfield = False
+
     def on_pushButton_Databinning(self):
         if self.pushButton_Databinning.isChecked():
             self.pushButton_Databinning.setStyleSheet("background-color : limegreen")
