@@ -559,7 +559,7 @@ class qt(QMainWindow):
 # 8. check buttons 
     def on_pushButton_Background(self):
         if self.pushButton_Background.isChecked():
-            self.pushButton_Background.setStyleSheet("background-color : green")
+            self.pushButton_Background.setStyleSheet("background-color : limegreen")
             self.pushButton_Background.setText("On")
             self.onBackground = True
         else:
@@ -568,7 +568,7 @@ class qt(QMainWindow):
             self.onBackground = False 
     def on_pushButton_Flatfield(self):
         if self.pushButton_Flatfield.isChecked():
-            self.pushButton_Flatfield.setStyleSheet("background-color : green")
+            self.pushButton_Flatfield.setStyleSheet("background-color : limegreen")
             self.pushButton_Flatfield.setText("On")
             self.onFlatfield = True
         else:
@@ -577,7 +577,7 @@ class qt(QMainWindow):
             self.onFlatfield = False
     def on_pushButton_Databinning(self):
         if self.pushButton_Databinning.isChecked():
-            self.pushButton_Databinning.setStyleSheet("background-color : green")
+            self.pushButton_Databinning.setStyleSheet("background-color : limegreen")
             self.pushButton_Databinning.setText("On")
             self.onDatabinning = True
         else:
