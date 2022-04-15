@@ -293,7 +293,7 @@
         <widget class="QPushButton" name="pushButton_Background">
          <property name="geometry">
           <rect>
-           <x>330</x>
+           <x>350</x>
            <y>340</y>
            <width>41</width>
            <height>28</height>
@@ -306,7 +306,7 @@
         <widget class="QPushButton" name="pushButton_Flatfield">
          <property name="geometry">
           <rect>
-           <x>460</x>
+           <x>480</x>
            <y>340</y>
            <width>41</width>
            <height>28</height>
@@ -319,7 +319,7 @@
         <widget class="QPushButton" name="pushButton_Databinning">
          <property name="geometry">
           <rect>
-           <x>570</x>
+           <x>590</x>
            <y>340</y>
            <width>41</width>
            <height>28</height>
@@ -332,7 +332,7 @@
         <widget class="QLabel" name="label_Background">
          <property name="geometry">
           <rect>
-           <x>380</x>
+           <x>400</x>
            <y>350</y>
            <width>71</width>
            <height>16</height>
@@ -345,7 +345,7 @@
         <widget class="QLabel" name="label_Flatfield">
          <property name="geometry">
           <rect>
-           <x>510</x>
+           <x>530</x>
            <y>350</y>
            <width>61</width>
            <height>16</height>
@@ -358,7 +358,7 @@
         <widget class="QLabel" name="label_Databinning">
          <property name="geometry">
           <rect>
-           <x>620</x>
+           <x>640</x>
            <y>350</y>
            <width>71</width>
            <height>16</height>
