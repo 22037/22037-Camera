@@ -290,7 +290,7 @@
           <string/>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_bg">
+        <widget class="QPushButton" name="pushButton_Background">
          <property name="geometry">
           <rect>
            <x>330</x>
@@ -303,7 +303,7 @@
           <string>Off</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_ff">
+        <widget class="QPushButton" name="pushButton_Flatfield">
          <property name="geometry">
           <rect>
            <x>460</x>
@@ -316,7 +316,7 @@
           <string>Off</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_db">
+        <widget class="QPushButton" name="pushButton_Databinning">
          <property name="geometry">
           <rect>
            <x>570</x>
@@ -329,7 +329,7 @@
           <string>Off</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_bg">
+        <widget class="QLabel" name="label_Background">
          <property name="geometry">
           <rect>
            <x>380</x>
@@ -342,7 +342,7 @@
           <string>Background</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_ff">
+        <widget class="QLabel" name="label_Flatfield">
          <property name="geometry">
           <rect>
            <x>510</x>
@@ -355,7 +355,7 @@
           <string>Flat Field</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_db">
+        <widget class="QLabel" name="label_Databinning">
          <property name="geometry">
           <rect>
            <x>620</x>
