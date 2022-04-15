@@ -416,6 +416,9 @@ class qt(QMainWindow):
 
             background = data[background_indx,:,:]
 
+            #determine curve fit of background in real time - takes too long
+            #flatfield[13,:,:] = wavelength(data_cube[background_indx,:,:])
+
             index_array = np.arange(0, 14)
             array_plus_index = index_array + background_indx + 1
             ind = array_plus_index%14
@@ -423,6 +426,48 @@ class qt(QMainWindow):
             data = data[ind,:,:]
 
             return data, background
+        
+        #this code determines the curve fit of the background
+        """ def wavelength(background):
+        width  = 720
+        height = 540
+        xmin = 0
+        xmax = width - 1
+        nx =  xmax - xmin + 1
+        ymin = 0
+        ymax = height - 1
+        ny =  ymax - ymin + 1
+        x, y = np.linspace(xmin, xmax, nx), np.linspace(ymin, ymax, ny)
+        X, Y = np.meshgrid(x, y)
+
+        # Our function to fit is going to be a sum of two-dimensional polynomials
+        def poly2(x, y, x0, y0, a0, a1, a2, a3, a4, a5):
+            x_c = x - x0
+            y_c = y - y0
+            return a0 + a1*(x_c) + a2*y_c + a3*x_c**2 + a4 * x_c * y_c + a5 * y_c**2
+        def _poly2(M, *args):
+            x, y = M
+            arr = np.zeros(x.shape)
+            arr = poly2(x, y, *args[0:8])
+            return arr
+        
+        image = background
+
+        # define 2nd order fit parameters
+        p2 = [720//2, 540//2, 720//2, 540//2, 720//2,  540//2,  720//2,  540//2]
+        # we need to ravel the meshgrids of X, Y points to a pair of 1-D arrays.
+        xdata = np.vstack((X.ravel(), Y.ravel()))
+        ydata = image.ravel()
+        # do the fit using our custom poly2 function
+        popt, pcov = curve_fit(_poly2, xdata, ydata, p2)
+        # create curve fit
+        curvefit = poly2(X, Y, *popt[0:8])
+
+        ######****************** FIT ******************######
+        # curve fit divided by maximum image value to generate matrix from 0 to 1
+        fit = curvefit/255.
+
+        return(fit) """
 
         stop=self.stop
         i=0
