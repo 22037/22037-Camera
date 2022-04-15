@@ -232,7 +232,7 @@ while(not stop):
 
     #NEW - FIND BACKGROUND
     if i==13:
-        data_cube, background = sort_algorithm(data_cube)
+        data_cube, background = sort_algorithm(data_cube, background)
 
     data_cube_corr = correction(background, flatfield, data_cube)
     data_cube_corr[frame_idx,:,:] = frame
