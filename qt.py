@@ -134,6 +134,9 @@ class qt(QMainWindow):
         self.working=True  
         self.stopFuc=True      
         self.UiComponents()  
+        self.onBackground = False
+        self.onFlatfield=False
+        self.onDatabinning =False
         self.pushButton_CameraOn.clicked.connect(self.on_pushButton_CameraOn)
         self.pushButton_CameraStop.clicked.connect(self.on_pushButton_CameraStop)      
         self.pushButton_CameraSave.clicked.connect(self.on_pushButton_CameraSave) 
@@ -331,22 +334,6 @@ class qt(QMainWindow):
             self.data_cube[frame_idx,:,:] = frame
             num_frames_received += 1
 
-            #condition for flatfield on or off
-            onFlatfield= self.onFlatfield 
-            onBackground =self.onBackground
-
-            # if onFlatfield or onBackground:
-            #     if i==13:                     
-            #         self.data_cube, self.background = self.sort_algorithm()
-
-            #         if onFlatfield and onBackground:                         
-            #              self.data_cube_corr = np.multiply(np.subtract(self.data_cube,self.background),self.flatfield)
-            #         elif onFlatfield:
-            #             self.data_cube_corr = np.multiply(self.data_cube,self.flatfield)
-            #         else:
-            #            self.data_cube_corr = np.multiply(np.subtract(self.data_cube,self.background))
- 
-
             frame_idx += 1
 
             while not self.camera.log.empty():
@@ -359,7 +346,7 @@ class qt(QMainWindow):
                 num_cubes_stored = 0
 
                 onFlatfield= self.onFlatfield 
-                onBackground =self.onBackground
+                onBackground = self.onBackground
 
                 # A. Condition for Flat field and Bac 
                 if onFlatfield or onBackground:
@@ -530,7 +517,7 @@ class qt(QMainWindow):
 #2. Camera Stop spin view Button
     def on_pushButton_CameraStop(self): 
         self.label_Status.setText("Status:")
-        self.label_SuccesMessage.setText("Stoped!")
+        self.label_SuccesMessage.setText("Stopped!")
         self.label_SuccesMessage.setStyleSheet('color: red')
         self.startAnimation() 
         self.stop=True
