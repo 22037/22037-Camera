@@ -230,12 +230,11 @@ while(not stop):
     data_cube[frame_idx,:,:] = frame
     num_frames_received += 1
 
-    #NEW - FIND BACKGROUND
+    # find background
     if i==13:
         data_cube, background = sort_algorithm(data_cube, background)
         data_cube_corr = correction(background, flatfield, data_cube)
-
-    #data_cube_corr[frame_idx,:,:] = frame
+    
     frame_idx += 1
 
     while not camera.log.empty():
