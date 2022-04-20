@@ -167,9 +167,6 @@ def sort_algorithm(data, background):
 
     background = data[background_indx,:,:]
 
-    #determine curve fit of background in real time - takes too long
-    #flatfield[13,:,:] = wavelength(data_cube[background_indx,:,:])
-
     index_array = np.arange(0, 14)
     array_plus_index = index_array + background_indx + 1
     ind = array_plus_index%14
