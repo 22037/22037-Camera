@@ -407,7 +407,7 @@ class qt(QMainWindow):
                     stop = True
                 last_display = current_time
                 num_frames_displayed += 1
-                self.stopAnimation()
+                #self.stopAnimation()
 
      #curve fit function
     def curveFitFlatField(self):
