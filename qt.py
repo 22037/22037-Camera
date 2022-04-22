@@ -110,11 +110,11 @@ class Worker(QObject):
 def correction_bgff(background, flatfield, data_cube):
     return np.multiply(np.subtract(data_cube,background),flatfield)
 
-@vectorize(['uint16(uint8, float32, uint8)'], nopython = True, fastmath = True)
+@vectorize(['uint16(float32, uint8)'], nopython = True, fastmath = True)
 def correction_ff(flatfield, data_cube):
     return np.multiply(data_cube,flatfield)
 
-@vectorize(['uint16(uint8, float32, uint8)'], nopython = True, fastmath = True)
+@vectorize(['uint16(uint8, uint8)'], nopython = True, fastmath = True)
 def correction_bg(background, data_cube):
     return np.subtract(data_cube,background)   
 
