@@ -106,6 +106,17 @@ class Worker(QObject):
             self.intReady.emit(line)
         self.finished.emit()
 
+@vectorize(['uint16(uint8, float32, uint8)'], nopython = True, fastmath = True)
+def correction_bgff(background, flatfield, data_cube):
+    return np.multiply(np.subtract(data_cube,background),flatfield)
+
+@vectorize(['uint16(uint8, float32, uint8)'], nopython = True, fastmath = True)
+def correction_ff(flatfield, data_cube):
+    return np.multiply(data_cube,flatfield)
+
+@vectorize(['uint16(uint8, float32, uint8)'], nopython = True, fastmath = True)
+def correction_bg(background, data_cube):
+    return np.subtract(data_cube,background)   
 
 class cameraOnSelected(QObject):
     def on_pushButton_CameraStop_clicked(self):
@@ -312,14 +323,11 @@ class qt(QMainWindow):
                     self.data_cube, self.background = self.sort_algorithm()
 
                     if onFlatfield and onBackground:
-                        self.data_cube_corr = np.multiply(np.subtract(
-                            self.data_cube, self.background), self.flatfield)
+                        self.data_cube_corr = correction_bgff(self.background, self.flatfield, self.data_cube)
                     elif onFlatfield:
-                        self.data_cube_corr = np.multiply(
-                            self.data_cube, self.flatfield)
+                        self.data_cube_corr = correction_ff(self.flatfield, self.data_cube)
                     else:
-                       self.data_cube_corr = np.subtract(
-                           self.data_cube, self.background)
+                       self.data_cube_corr = correction_bg(self.background, self.data_cube)
 
                 # B. Condition for On binning
 
