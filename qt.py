@@ -4,7 +4,7 @@ import sys
 import serial
 import serial.tools.list_ports
 import warnings
-from turtle import back
+from turtle import back, pd
 from cv2 import detail_SeamFinder
 from xmlrpc.client import Boolean
 from tracemalloc import stop
@@ -16,31 +16,21 @@ from PyQt5.QtWidgets import QApplication, QComboBox, QDialog, QMainWindow, QWidg
 from PyQt5.uic import loadUi
 #
 import cv2
-import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import logging
-import time
 import numpy as np
-import cv2
 from PyQt5.QtGui import *
 from PyQt5 import QtGui
 from PyQt5.QtGui import QPixmap
 # from PIL import ImageFont,ImageDraw,Image
 
-import h5py
-import cv2
-import logging
-import time
-import numpy as np
 from datetime import datetime
 from timeit import default_timer as timer
 from queue import Queue
 from examples.configs.blackfly_configs import configs
 from numba import vectorize, jit, prange
-import matplotlib.pyplot as plt
-import sys
 
 # Define Variable
 
@@ -414,10 +404,10 @@ class qt(QMainWindow):
                                 display_frame = np.cast['uint8'](
                                     self.data_cube_corr[i, :, :])
                                   # This section creates significant delay and we need to throttle the display to maintain max capture and storage rate
-                                cv2.putText(display_frame, "Capture FPS:{} [Hz]".format(
-                                    self.camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
-                                cv2.putText(display_frame, "Display FPS:{} [Hz]".format(
-                                    measured_dps),        textLocation1, font, fontScale, 255, lineType)
+                                # cv2.putText(display_frame, "Capture FPS:{} [Hz]".format(
+                                #     self.camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
+                                # cv2.putText(display_frame, "Display FPS:{} [Hz]".format(
+                                #     measured_dps),        textLocation1, font, fontScale, 255, lineType)
                                 # cv2.imshow(window_name, display_frame)
 
                                 Image1 = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
@@ -445,10 +435,10 @@ class qt(QMainWindow):
                 if not  notRun:
 
                     # This section creates significant delay and we need to throttle the display to maintain max capture and storage rate
-                    cv2.putText(display_frame, "Capture FPS:{} [Hz]".format(
-                        self.camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
-                    cv2.putText(display_frame, "Display FPS:{} [Hz]".format(
-                        measured_dps),        textLocation1, font, fontScale, 255, lineType)
+                    # cv2.putText(display_frame, "Capture FPS:{} [Hz]".format(
+                    #     self.camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
+                    # cv2.putText(display_frame, "Display FPS:{} [Hz]".format(
+                    #     measured_dps),        textLocation1, font, fontScale, 255, lineType)
                     # cv2.imshow(window_name, display_frame)
 
                     FlippedImage = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
@@ -472,6 +462,7 @@ class qt(QMainWindow):
     def curveFitFlatField(self):
 
         #images are stored in BSstandard folder
+        # pd.read_csv('fit0_2', dtype='float32', sep=',', header =None)
         fit0 = np.loadtxt('fit0_2', dtype='float32', delimiter=',')
         fit1 = np.loadtxt('fit1_2', dtype='float32', delimiter=',')
         fit2 = np.loadtxt('fit2_2', dtype='float32', delimiter=',')
@@ -483,7 +474,7 @@ class qt(QMainWindow):
         fit8 = np.loadtxt('fit8_2', dtype='float32', delimiter=',')
         fit9 = np.loadtxt('fit9_2', dtype='float32', delimiter=',')
         fit10 = np.loadtxt('fit10_2', dtype='float32', delimiter=',')
-        #comment out 11 and 13
+        # #comment out 11 and 13
         fit11 = np.loadtxt('fit12_2', dtype='float32', delimiter=',')
         fit12 = np.loadtxt('fit12_2', dtype='float32', delimiter=',')
         fit13 = np.loadtxt('background', dtype='float32', delimiter=',')
