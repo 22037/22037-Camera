@@ -49,6 +49,10 @@ height = 421      # 1080, 540
 
 display_interval = 1./300.  #
 # window_name = 'Camera'
+# main_window_name         = 'Captured'
+# binned_window_name       = 'Binned'
+# processed_window_name    = 'Band-Passed'
+# ratioed_window_name      = 'Ratioed'
 
 # synthetic data
 test_img = np.random.randint(0, 255,
@@ -161,6 +165,7 @@ class qt(QMainWindow):
         self.onBackground = False
         self.onFlatfield = False
         self.onDatabinning = False
+        self.onBloodPsio=False
         self.pushButton_Background.setCheckable(True)
         self.pushButton_Flatfield.setCheckable(True)
         self.pushButton_Databinning.setCheckable(True)
@@ -207,6 +212,7 @@ class qt(QMainWindow):
         self.onBackground = False
         self.onFlatfield = False
         self.onDatabinning = False  
+        self.onBloodPsio=False
         self.wavelengthSelected = 15 
         self.data_cube_corr = np.zeros((14, 540, 720), 'uint16')
         self.frame = np.zeros((540, 720), dtype=np.uint8)   
@@ -214,6 +220,7 @@ class qt(QMainWindow):
         self.label_Status.setText("Status:")
         self.label_SuccesMessage.setText("Started!")
         self.label_SuccesMessage.setStyleSheet('color: blue')   
+        # cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE) # or WINDOW_NORMAL
 
         #  call camera function
         self.on_camera()
@@ -333,7 +340,12 @@ class qt(QMainWindow):
 
                 onDatabinning = self.onDatabinning
                 if onDatabinning:
-                    self.data_cube_corr = self.bin20()
+                    onBloodPsio = self.onBloodPsio
+                    if onBloodPsio:
+                        self.data_cube_corr = self.bin20()
+                  
+                        test=self.blood_psio()
+                        self.data_cube_corr=(test.astype(np.uint8))
 
                     # HDF5
                 save = self.hdfSave
@@ -387,34 +399,73 @@ class qt(QMainWindow):
 
             if (current_time - last_display) >= display_interval:
                 selChannel = self.wavelengthSelected
-                if selChannel == 15:
-                    display_frame = np.cast['uint8'](
-                        self.data_cube_corr[:, :, :])
+                onBloodPsio=self.onBloodPsio
+                notRun=False
+                if self.onBackground or self.onFlatfield or self.onDatabinning or self.onBloodPsio:
+                   
+                    if onBloodPsio:
+                        # self.data_cube_corr=cv2.resize(self.data_cube_corr, (540,720), fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
+                        display_frame = np.cast['uint8'](
+                                self.data_cube_corr[:, :])
+                    else :
+                        if selChannel == 15:
+                            notRun=True
+                            for i in range(14):
+                                display_frame = np.cast['uint8'](
+                                    self.data_cube_corr[i, :, :])
+                                  # This section creates significant delay and we need to throttle the display to maintain max capture and storage rate
+                                cv2.putText(display_frame, "Capture FPS:{} [Hz]".format(
+                                    self.camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
+                                cv2.putText(display_frame, "Display FPS:{} [Hz]".format(
+                                    measured_dps),        textLocation1, font, fontScale, 255, lineType)
+                                # cv2.imshow(window_name, display_frame)
+
+                                Image1 = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
+                                FlippedImage = cv2.flip(Image1, 1)
+                                ConvertToQtFormat = QtGui.QImage(
+                                    FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
+                                self.label_CameraDisplay.setPixmap(
+                                    QPixmap.fromImage(ConvertToQtFormat))
+                                self.lcdNumber_FPSin.display(self.camera.measured_fps)
+                                self.lcdNumber_FPSout.display(measured_dps)
+
+                                # quit the program if users enter q or closes the display window
+                                # this likely is the reason that display frame rate is not faster than 60fps.
+                                if cv2.waitKey(1) & 0xFF == ord('q'):
+                                    stop = True
+                                last_display = current_time
+                                num_frames_displayed += 1
+                        
+                        else:
+                            display_frame = np.cast['uint8'](
+                                self.data_cube_corr[selChannel, :, :])
                 else:
-                    display_frame = np.cast['uint8'](
-                        self.data_cube_corr[selChannel, :, :])
+                    display_frame=frame
 
-                # This section creates significant delay and we need to throttle the display to maintain max capture and storage rate
-                cv2.putText(display_frame, "Capture FPS:{} [Hz]".format(
-                    self.camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
-                cv2.putText(display_frame, "Display FPS:{} [Hz]".format(
-                    measured_dps),        textLocation1, font, fontScale, 255, lineType)
+                if not  notRun:
 
-                Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                FlippedImage = cv2.flip(Image1, 1)
-                ConvertToQtFormat = QtGui.QImage(
-                    FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
-                self.label_CameraDisplay.setPixmap(
-                    QPixmap.fromImage(ConvertToQtFormat))
-                self.lcdNumber_FPSin.display(self.camera.measured_fps)
-                self.lcdNumber_FPSout.display(measured_dps)
+                    # This section creates significant delay and we need to throttle the display to maintain max capture and storage rate
+                    cv2.putText(display_frame, "Capture FPS:{} [Hz]".format(
+                        self.camera.measured_fps), textLocation0, font, fontScale, 255, lineType)
+                    cv2.putText(display_frame, "Display FPS:{} [Hz]".format(
+                        measured_dps),        textLocation1, font, fontScale, 255, lineType)
+                    # cv2.imshow(window_name, display_frame)
 
-                # quit the program if users enter q or closes the display window
-                # this likely is the reason that display frame rate is not faster than 60fps.
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    stop = True
-                last_display = current_time
-                num_frames_displayed += 1
+                    FlippedImage = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
+                    # FlippedImage = cv2.flip(Image1, 1)
+                    ConvertToQtFormat = QtGui.QImage(
+                        FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
+                    self.label_CameraDisplay.setPixmap(
+                        QPixmap.fromImage(ConvertToQtFormat))
+                    self.lcdNumber_FPSin.display(self.camera.measured_fps)
+                    self.lcdNumber_FPSout.display(measured_dps)
+
+                    # quit the program if users enter q or closes the display window
+                    # this likely is the reason that display frame rate is not faster than 60fps.
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        stop = True
+                    last_display = current_time
+                    num_frames_displayed += 1
                 #self.stopAnimation()
 
      #curve fit function
@@ -542,7 +593,8 @@ class qt(QMainWindow):
 # 7.  pushButton_Physicogical
 
     def on_pushButton_Physicogical(self):
-        self.blood_psio()
+        self.onBloodPsio=True
+        # self.blood_psio()
 
 # 8. check buttons
     def on_pushButton_Background(self):
@@ -585,57 +637,42 @@ class qt(QMainWindow):
     #  @jit(nopython=True, fastmath=True, parallel=True)
     def blood_psio(self):
         # Reducing the image resolution by binning (summing up pixels)
-        bin_x = 20
-        bin_y = 20
+        # bin_x = 20
+        # bin_y = 20
         counter = bin_time = 0
-        scale = (bin_x*bin_y*255)
+        min_fr = 0.0
+        max_fr = 1.0
+        # scale = (bin_x*bin_y*255)
         start_time = time.time()
-        frame_bin = self.bin20(self.data_cube_corr)
-        # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
-        bin_time += (time.perf_counter() - start_time)
-
-        frame_ratio = np.divide((frame_bin[1, :, :].astype(
-            np.float32), frame_bin[2, :, :].astype(np.float32)*255.0).astype(np.uint16))
-
-        # Display Binned Image, make it same size as original image
-        frame_bin_01 = frame_bin/scale  # make image 0..1
-        frame_tmp = cv2.resize(frame_bin_01, (width, height),
-                               fx=0, fy=0, interpolation=cv2.INTER_NEAREST)
-        cv2.putText(frame_tmp, "Frame:{}".format(counter),
-                    textLocation0, font, fontScale, fontColor, lineType)
-        # cv2.imshow(binned_window_name, frame_tmp)
-        Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        FlippedImage = cv2.flip(Image1, 1)
-        ConvertToQtFormat = QtGui.QImage(
-            FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
-
-        self.label_CameraDisplay.setPixmap(
-            QPixmap.fromImage(ConvertToQtFormat))
-        self.lcdNumber_FPSin.display(self.camera.measured_fps)
-        self.lcdNumber_FPSout.display(counter)
-
+        # frame_bin = self.bin20(self.data_cube_corr)
+        # # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
+        
+        frame_bin = self.data_cube_corr
+        frame_ratio = np.divide(frame_bin[1, :, :].astype(np.uint32), frame_bin[2, :, :].astype(np.uint32))
+        counter += (time.perf_counter() - start_time)
+      
         # Display Ratio Image, make it same size as original image
-        frame_ratio_01 = (frame_ratio/255).astype(np.float32)
+        frame_ratio_01 = (frame_ratio).astype(np.float32)
         frame_ratio_01 = np.sqrt(frame_ratio_01)
         min_fr = 0.95*min_fr + 0.05*frame_ratio_01.min()
         max_fr = 0.95*max_fr + 0.05*frame_ratio_01.max()
-        frame_ratio_01 = (frame_ratio_01 - min_fr)/(max_fr-min_fr)
+        frame_ratio_01 = (frame_ratio_01 - min_fr)/(max_fr-min_fr)*10
         frame_tmp = cv2.resize(
-            frame_ratio_01, (width, height), fx=0, fy=0, interpolation=cv2.INTER_NEAREST)
-        cv2.putText(frame_tmp, "Frame:{}".format(counter),
-                    textLocation0, font, fontScale, fontColor, lineType)
-        # cv2.imshow(ratioed_window_name, frame_tmp)
-        Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        FlippedImage = cv2.flip(Image1, 1)
-        ConvertToQtFormat = QtGui.QImage(
-            FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
+            frame_ratio_01, (540, 720), fx=0, fy=0, interpolation=cv2.INTER_NEAREST)
+        # cv2.putText(frame_tmp, "Frame:{}".format(counter),
+        #             textLocation0, font, fontScale, fontColor, lineType)
+        # # cv2.imshow(ratioed_window_name, frame_tmp)
+        # Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # FlippedImage = cv2.flip(Image1, 1)
+        # ConvertToQtFormat = QtGui.QImage(
+        #     FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
 
-        self.label_CameraDisplay.setPixmap(
-            QPixmap.fromImage(ConvertToQtFormat))
-        self.lcdNumber_FPSin.display(self.camera.measured_fps)
-        self.lcdNumber_FPSout.display(counter)
+        # self.label_CameraDisplay.setPixmap(
+        #     QPixmap.fromImage(ConvertToQtFormat))
+        # self.lcdNumber_FPSin.display(self.camera.measured_fps)
+        # self.lcdNumber_FPSout.display(counter)
 
-        return (frame_ratio)
+        return (frame_tmp)
 
 
 ############################################################### First page End ###############################################
