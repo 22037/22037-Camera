@@ -4,49 +4,37 @@ import sys
 import serial
 import serial.tools.list_ports
 import warnings
+import cv2
+import logging
+import time
+import numpy as np
+
 from turtle import back, pd
 from cv2 import detail_SeamFinder
 from xmlrpc.client import Boolean
 from tracemalloc import stop
-
-from PyQt5.QtCore import QSize, QRect, QObject, pyqtSignal, QThread, pyqtSignal, pyqtSlot
-import time
-from PyQt5.QtWidgets import QApplication, QComboBox, QDialog, QMainWindow, QWidget, QLabel, QTextEdit, QListWidget, QListView
-
 from PyQt5.uic import loadUi
-#
-import cv2
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import logging
-import numpy as np
 from PyQt5.QtGui import *
 from PyQt5 import QtGui
 from PyQt5.QtGui import QPixmap
-# from PIL import ImageFont,ImageDraw,Image
-
 from datetime import datetime
 from timeit import default_timer as timer
 from queue import Queue
 from examples.configs.blackfly_configs import configs
 from numba import vectorize, jit, prange
+from PyQt5.QtCore import QSize, QRect, QObject, pyqtSignal, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtWidgets import QApplication, QComboBox, QDialog, QMainWindow, QWidget, QLabel, QTextEdit, QListWidget, QListView
 
 # Define Variable
-
-width = 511       # 1920, 720
-height = 421      # 1080, 540
-
 display_interval = 1./300.  #
-# window_name = 'Camera'
-# main_window_name         = 'Captured'
-# binned_window_name       = 'Binned'
-# processed_window_name    = 'Band-Passed'
-# ratioed_window_name      = 'Ratioed'
 
 # synthetic data
-test_img = np.random.randint(0, 255,
-                             (height, width), 'uint8')  # random image
+width = 511       # 1920, 720
+height = 421      # 1080, 540
+test_img = np.random.randint(0, 255,(height, width), 'uint8')  # random image
 
 frame = np.zeros((height, width), dtype=np.uint8)
 # pre allocate
@@ -114,14 +102,9 @@ def correction_bg(background, data_cube):
 
 class cameraOnSelected(QObject):
     def on_pushButton_CameraStop_clicked(self):
-        z = 0
-        # self.label_49.clear()
-        # self.camera.stop()
         self.stop = True
         self.stopFuc = False
         ConvertToQtFormat = QtGui.QImage()
-        # self.label_CameraDisplay.setPixmap(QPixmap.fromImage(ConvertToQtFormat))
-        # self.label_CameraDisplay.clear()
 
 
 class qt(QMainWindow):
@@ -139,8 +122,6 @@ class qt(QMainWindow):
         # self.stop=pyqtSignal(Boolean)
         self.stop = False
         self.pushButton_StartComm.clicked.connect(self.start_loop)
-        # self.label_11.setText("Not detected")
-        # self.label_11.setText(ports[0])
         self.menuBar = self.menuBar()
         self.working = True
         self.stopFuc = True
@@ -209,8 +190,7 @@ class qt(QMainWindow):
         
         self.label_Status.setText("Status:")
         self.label_SuccesMessage.setText("Started!")
-        self.label_SuccesMessage.setStyleSheet('color: blue')   
-        # cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE) # or WINDOW_NORMAL
+        self.label_SuccesMessage.setStyleSheet('color: blue')
 
         #  call camera function
         self.on_camera()
@@ -262,11 +242,6 @@ class qt(QMainWindow):
         fontScale = 1
         fontColor = (0, 0, 255)
         lineType = 2
-
-        main_window_name = 'Captured'
-        binned_window_name = 'Binned'
-        processed_window_name = 'Band-Passed'
-        ratioed_window_name = 'Ratioed'
 
         # Setting up logging
         # options are: DEBUG, INFO, ERROR, WARNING
@@ -627,19 +602,12 @@ class qt(QMainWindow):
 
     #  @jit(nopython=True, fastmath=True, parallel=True)
     def blood_psio(self):
-        # Reducing the image resolution by binning (summing up pixels)
-        # bin_x = 20
-        # bin_y = 20
         counter = bin_time = 0
         min_fr = 0.0
         max_fr = 1.0
-        # scale = (bin_x*bin_y*255)
         start_time = time.time()
-        # frame_bin = self.bin20(self.data_cube_corr)
-        # # frame_bin   = rebin(frame, bin_x=20, bin_y=20, dtype=np.uint32)
-        
         frame_bin = self.data_cube_corr
-        frame_ratio = np.divide(frame_bin[1, :, :].astype(np.uint32), frame_bin[2, :, :].astype(np.uint32))
+        frame_ratio = np.divide(frame_bin[1, :, :].astype(np.uint32), frame_bin[6, :, :].astype(np.uint32))
         counter += (time.perf_counter() - start_time)
       
         # Display Ratio Image, make it same size as original image
@@ -650,18 +618,6 @@ class qt(QMainWindow):
         frame_ratio_01 = (frame_ratio_01 - min_fr)/(max_fr-min_fr)*10
         frame_tmp = cv2.resize(
             frame_ratio_01, (540, 720), fx=0, fy=0, interpolation=cv2.INTER_NEAREST)
-        # cv2.putText(frame_tmp, "Frame:{}".format(counter),
-        #             textLocation0, font, fontScale, fontColor, lineType)
-        # # cv2.imshow(ratioed_window_name, frame_tmp)
-        # Image1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        # FlippedImage = cv2.flip(Image1, 1)
-        # ConvertToQtFormat = QtGui.QImage(
-        #     FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
-
-        # self.label_CameraDisplay.setPixmap(
-        #     QPixmap.fromImage(ConvertToQtFormat))
-        # self.lcdNumber_FPSin.display(self.camera.measured_fps)
-        # self.lcdNumber_FPSout.display(counter)
 
         return (frame_tmp)
 
