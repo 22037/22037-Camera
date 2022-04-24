@@ -109,7 +109,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>ANALYSIS</string>
+          <string/>
          </property>
         </widget>
         <widget class="QPushButton" name="pushButton_DefaultView">
