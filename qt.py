@@ -137,12 +137,18 @@ class qt(QMainWindow):
         self.onFlatfield = False
         self.onDatabinning = False
         self.onBloodPsio=False
+        self.onPhysiological_BG = False
+        self.onPhysiological_RG = False
         self.pushButton_Background.setCheckable(True)
         self.pushButton_Flatfield.setCheckable(True)
         self.pushButton_Databinning.setCheckable(True)
+        self.pushButton_Physiological_BG.setCheckable(True)
+        self.pushButton_Physiological_RG.setCheckable(True)
         self.pushButton_Background.setStyleSheet("background-color : lightgrey")
         self.pushButton_Flatfield.setStyleSheet("background-color : lightgrey")
         self.pushButton_Databinning.setStyleSheet("background-color : lightgrey")
+        self.pushButton_Physiological_BG.setStyleSheet("background-color : lightgrey")
+        self.pushButton_Physiological_RG.setStyleSheet("background-color : lightgrey")
         self.pushButton_Background.clicked.connect(self.on_pushButton_Background)
         self.pushButton_Flatfield.clicked.connect(self.on_pushButton_Flatfield)
         self.pushButton_Databinning.clicked.connect(self.on_pushButton_Databinning)
@@ -151,7 +157,8 @@ class qt(QMainWindow):
         self.pushButton_DefaultView.clicked.connect(self.on_pushButton_DefaultView)
         self.pushButton_Analysis.clicked.connect(self.on_pushButton_Analysis)
         self.pushButton_Wavelength.clicked.connect(self.on_pushButton_Wavelength)
-        self.pushButton_Physicogical.clicked.connect(self.on_pushButton_Physicogical)   
+        self.pushButton_Physiological_BG.clicked.connect(self.on_pushButton_Physiological_BG)   
+        self.pushButton_Physiological_RG.clicked.connect(self.on_pushButton_Physiological_RG)
 
      # Add item list to drop down
     def UiComponents(self):
@@ -182,8 +189,11 @@ class qt(QMainWindow):
         self.hdfSave = False
         self.onBackground = False
         self.onFlatfield = False
-        self.onDatabinning = False  
-        self.onBloodPsio=False
+        self.onDatabinning = False
+        self.onPhysiological_BG = False
+        self.onPhysiological_RG = False  
+        self.onBloodPsio = False
+        self.onBloodPsio_BG_RG = False
         self.wavelengthSelected = 15 
         self.data_cube_corr = np.zeros((14, 540, 720), 'uint16')
         self.frame = np.zeros((540, 720), dtype=np.uint8)   
@@ -558,8 +568,34 @@ class qt(QMainWindow):
 
 # 7.  pushButton_Physicogical
 
-    def on_pushButton_Physicogical(self):
+    def on_pushButton_Physiological_BG(self):
+        if self.on_pushButton_Physiological_BG.isChecked():
+            self.on_pushButton_Physiological_BG.setStyleSheet(
+                "background-color : limegreen")
+            self.on_pushButton_Physiological_RG.setStyleSheet(
+                "background-color : lightgrey")
+            self.onPhysiological_BG = True
+        else:
+            self.on_pushButton_Physiological_BG.setStyleSheet(
+                "background-color : lightgrey")
+            self.onPhysiological_BG = False
         self.onBloodPsio=True
+        self.onBloodPsio_BG_RG = False
+        # self.blood_psio()
+
+    def on_pushButton_Physiological_RG(self):
+        if self.on_pushButton_Physiological_RG.isChecked():
+            self.on_pushButton_Physiological_RG.setStyleSheet(
+                "background-color : limegreen")
+            self.on_pushButton_Physiological_BG.setStyleSheet(
+                "background-color : lightgrey")
+            self.onPhysiological_RG = True
+        else:
+            self.on_pushButton_Physiological_RG.setStyleSheet(
+                "background-color : lightgrey")
+            self.onPhysiological_RG = False    
+        self.onBloodPsio=True
+        self.onBloodPsio_BG_RG = True
         # self.blood_psio()
 
 # 8. check buttons
@@ -607,7 +643,10 @@ class qt(QMainWindow):
         max_fr = 1.0
         start_time = time.time()
         frame_bin = self.data_cube_corr
-        frame_ratio = np.divide(frame_bin[1, :, :].astype(np.uint32), frame_bin[6, :, :].astype(np.uint32))
+        if (self.onBloodPsio_BG_RG):
+            frame_ratio = np.divide(frame_bin[1, :, :].astype(np.uint32), frame_bin[6, :, :].astype(np.uint32))
+        else:
+            frame_ratio = np.divide(frame_bin[1, :, :].astype(np.uint32), frame_bin[4, :, :].astype(np.uint32))
         counter += (time.perf_counter() - start_time)
       
         # Display Ratio Image, make it same size as original image

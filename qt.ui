@@ -150,17 +150,18 @@
           <string>OK</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_Physicogical">
+        <widget class="QPushButton" name="pushButton_Physiological_BG">
          <property name="geometry">
           <rect>
            <x>610</x>
            <y>290</y>
-           <width>231</width>
+           <width>121</width>
            <height>71</height>
           </rect>
          </property>
          <property name="text">
-          <string>PHYSIOLGICAL DATA</string>
+          <string>PHYSIOLOGICAL 
+BG</string>
          </property>
         </widget>
         <widget class="QLCDNumber" name="lcdNumber_FPSin">
@@ -418,6 +419,20 @@
          </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_Physiological_RG">
+         <property name="geometry">
+          <rect>
+           <x>740</x>
+           <y>290</y>
+           <width>121</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>PHYSIOLOGICAL
+RG</string>
          </property>
         </widget>
        </widget>
