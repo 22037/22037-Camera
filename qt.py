@@ -569,14 +569,14 @@ class qt(QMainWindow):
 # 7.  pushButton_Physicogical
 
     def on_pushButton_Physiological_BG(self):
-        if self.on_pushButton_Physiological_BG.isChecked():
-            self.on_pushButton_Physiological_BG.setStyleSheet(
+        if self.pushButton_Physiological_BG.isChecked():
+            self.pushButton_Physiological_BG.setStyleSheet(
                 "background-color : limegreen")
-            self.on_pushButton_Physiological_RG.setStyleSheet(
+            self.pushButton_Physiological_RG.setStyleSheet(
                 "background-color : lightgrey")
             self.onPhysiological_BG = True
         else:
-            self.on_pushButton_Physiological_BG.setStyleSheet(
+            self.pushButton_Physiological_BG.setStyleSheet(
                 "background-color : lightgrey")
             self.onPhysiological_BG = False
         self.onBloodPsio=True
@@ -584,14 +584,14 @@ class qt(QMainWindow):
         # self.blood_psio()
 
     def on_pushButton_Physiological_RG(self):
-        if self.on_pushButton_Physiological_RG.isChecked():
-            self.on_pushButton_Physiological_RG.setStyleSheet(
+        if self.pushButton_Physiological_RG.isChecked():
+            self.pushButton_Physiological_RG.setStyleSheet(
                 "background-color : limegreen")
-            self.on_pushButton_Physiological_BG.setStyleSheet(
+            self.pushButton_Physiological_BG.setStyleSheet(
                 "background-color : lightgrey")
             self.onPhysiological_RG = True
         else:
-            self.on_pushButton_Physiological_RG.setStyleSheet(
+            self.pushButton_Physiological_RG.setStyleSheet(
                 "background-color : lightgrey")
             self.onPhysiological_RG = False    
         self.onBloodPsio=True
