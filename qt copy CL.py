@@ -659,20 +659,23 @@ class qt(QMainWindow):
         frame_ratio_01 = (frame_ratio_01 - min_fr)/(max_fr-min_fr)*10
         frame_tmp = cv2.resize(
             frame_ratio_01, (540, 720), fx=0, fy=0, interpolation=cv2.INTER_NEAREST)
-
+        
+        frame_ratio_01 = np.resize(frame_ratio_01, (540,720))
         mask = np.zeros((540,720), dtype=np.uint8)
         k = np.zeros((540,720), dtype=np.uint8)
         synthImage = np.zeros((540,720,3), np.uint8)
 
         for i in range(width):
             for j in range(height):
-                if(frame_tmp[i,j]>10):
+                if(frame_ratio_01[i,j] > 10):
                     mask[i,j] = 1
 
-        synthImage[mask,k,k] = mask
-        symthImage = np.resize(synthImage, (540,720,3))
+        synthImage[0,:,0] = k
+        synthImage[0,0,:] = k
+        synthImage[:,0,0] = mask
+        # symthImage = np.resize(synthImage, (540,720,3))
 
-        self.temp_corr = np.resize(self.temp_corr , (540,720,13))
+        self.temp_corr = np.reshape(self.temp_corr , (540,720,13))
         dst = cv2.addWeighted(self.temp_corr[:,:,3], 1, synthImage, 1, 0)
         frame_tmp = dst
         print('hi')
