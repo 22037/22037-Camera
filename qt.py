@@ -1,6 +1,7 @@
 __author__ = 'Devesh Khosla - github.com/dekhosla'
 
 import sys
+import tkinter
 import serial
 import serial.tools.list_ports
 import warnings
@@ -547,7 +548,25 @@ class qt(QMainWindow):
 # 4. Display Target or default view pushButton_DefaultView_
 
     def on_pushButton_DefaultView(self):
-        z = 0
+        self.onBackground = False
+        self.pushButton_Background.setStyleSheet(
+                "background-color : lightgrey")
+        self.pushButton_Background.setText("Off")
+        self.onFlatfield = False
+        self.pushButton_Flatfield.setStyleSheet(
+                "background-color : lightgrey")
+        self.pushButton_Flatfield.setText("Off")
+        self.onDatabinning = False
+        self.pushButton_Databinning.setStyleSheet(
+                "background-color : lightgrey")
+        self.pushButton_Databinning.setText("Off")
+        self.onPhysiological_BG = False
+        self.onPhysiological_RG = False
+        self.pushButton_Physiological_BG.setStyleSheet(
+                "background-color : lightgrey")
+        self.pushButton_Physiological_RG.setStyleSheet(
+                "background-color : lightgrey")
+        
 
     def target(window_name, display_frame):
       cv2.imshow(window_name, display_frame)
