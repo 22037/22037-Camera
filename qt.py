@@ -24,6 +24,8 @@ from PyQt5.QtGui import QPixmap
 from datetime import datetime
 from timeit import default_timer as timer
 from queue import Queue
+
+from sympy import root
 from examples.configs.blackfly_configs import configs
 from numba import vectorize, jit, prange
 from PyQt5.QtCore import QSize, QRect, QObject, pyqtSignal, QThread, pyqtSignal, pyqtSlot
@@ -549,24 +551,23 @@ class qt(QMainWindow):
 
     def on_pushButton_DefaultView(self):
         self.onBackground = False
+        self.onFlatfield = False
+        self.onDatabinning = False
+        self.onPhysiological_BG = False
+        self.onPhysiological_RG = False
         self.pushButton_Background.setStyleSheet(
                 "background-color : lightgrey")
         self.pushButton_Background.setText("Off")
-        self.onFlatfield = False
         self.pushButton_Flatfield.setStyleSheet(
                 "background-color : lightgrey")
         self.pushButton_Flatfield.setText("Off")
-        self.onDatabinning = False
         self.pushButton_Databinning.setStyleSheet(
                 "background-color : lightgrey")
         self.pushButton_Databinning.setText("Off")
-        self.onPhysiological_BG = False
-        self.onPhysiological_RG = False
         self.pushButton_Physiological_BG.setStyleSheet(
                 "background-color : lightgrey")
         self.pushButton_Physiological_RG.setStyleSheet(
                 "background-color : lightgrey")
-        
 
     def target(window_name, display_frame):
       cv2.imshow(window_name, display_frame)
