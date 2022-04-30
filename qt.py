@@ -221,8 +221,8 @@ class qt(QMainWindow):
         measured_dps = 0  # computed in main thread, number of frames displayed per second
         proc_time = 0
         counter = bin_time = 0
-        min_fr = 0.0
-        max_fr = 1.0
+        self.min_fr = 0.0
+        self.max_fr = 1.0
         self.data_cube_corr = np.zeros((14, 540, 720), 'uint16')
         self.frame = np.zeros((540, 720), dtype=np.uint8)
         self.data_cube = np.zeros((14, 540, 720), dtype=np.uint8)
@@ -323,7 +323,7 @@ class qt(QMainWindow):
                         self.data_cube_corr = self.bin20()
                   
                         test=self.blood_psio()
-                        self.data_cube_corr=(test.astype(np.uint8))
+                        self.data_cube_corr=(test.astype(np.float32))
 
                     # HDF5
                 save = self.hdfSave
@@ -383,8 +383,9 @@ class qt(QMainWindow):
                    
                     if onBloodPsio:
                         # self.data_cube_corr=cv2.resize(self.data_cube_corr, (540,720), fx=0, fy=0, interpolation = cv2.INTER_NEAREST)
-                        display_frame = np.cast['uint8'](
+                        display_frame = np.cast['float32'](
                                 self.data_cube_corr[:, :])
+                        #display_frame = self.data_cube_corr
                     else :
                         if selChannel == 15:
                             notRun=True
@@ -399,6 +400,8 @@ class qt(QMainWindow):
                                 # cv2.imshow(window_name, display_frame)
 
                                 Image1 = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
+                                # cv2.putText(display_frame,"Display FPS:{} [Hz]".format(counter),        textLocation1, font, fontScale, 255, lineType)
+                                # cv2.imshow("_", display_frame)
                                 FlippedImage = cv2.flip(Image1, 1)
                                 ConvertToQtFormat = QtGui.QImage(
                                     FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
@@ -430,6 +433,8 @@ class qt(QMainWindow):
                     # cv2.imshow(window_name, display_frame)
 
                     FlippedImage = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
+                    # cv2.putText(display_frame,"Display FPS:{} [Hz]".format(counter),        textLocation1, font, fontScale, 255, lineType)
+                    # cv2.imshow("_", display_frame)
                     # FlippedImage = cv2.flip(Image1, 1)
                     ConvertToQtFormat = QtGui.QImage(
                         FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
@@ -659,24 +664,27 @@ class qt(QMainWindow):
     #  @jit(nopython=True, fastmath=True, parallel=True)
     def blood_psio(self):
         counter = bin_time = 0
-        min_fr = 0.0
-        max_fr = 1.0
+        min_fr = self.min_fr
+        max_fr = self.max_fr
         start_time = time.time()
         frame_bin = self.data_cube_corr
         if (self.onBloodPsio_BG_RG):
-            frame_ratio = np.divide(frame_bin[1, :, :].astype(np.uint32), frame_bin[6, :, :].astype(np.uint32))
+            frame_ratio = np.divide(frame_bin[1, :, :].astype(np.float32), frame_bin[5, :, :].astype(np.float32)*255).astype(np.uint16)
         else:
-            frame_ratio = np.divide(frame_bin[1, :, :].astype(np.uint32), frame_bin[4, :, :].astype(np.uint32))
+            frame_ratio = np.divide(frame_bin[1, :, :].astype(np.uint32), frame_bin[6, :, :].astype(np.uint32)).astype(np.float32)
         counter += (time.perf_counter() - start_time)
       
         # Display Ratio Image, make it same size as original image
-        frame_ratio_01 = (frame_ratio).astype(np.float32)
+        frame_ratio_01 = (frame_ratio/255).astype(np.float32)
         frame_ratio_01 = np.sqrt(frame_ratio_01)
         min_fr = 0.95*min_fr + 0.05*frame_ratio_01.min()
         max_fr = 0.95*max_fr + 0.05*frame_ratio_01.max()
-        frame_ratio_01 = (frame_ratio_01 - min_fr)/(max_fr-min_fr)*10
+        frame_ratio_01 = (frame_ratio_01 - min_fr)/(max_fr-min_fr)
         frame_tmp = cv2.resize(
-            frame_ratio_01, (540, 720), fx=0, fy=0, interpolation=cv2.INTER_NEAREST)
+            frame_ratio_01, (720, 540), fx=0, fy=0, interpolation=cv2.INTER_NEAREST)
+        
+        #cv2.putText(frame_tmp,"Display FPS:{} [Hz]".format(counter),        textLocation1, font, fontScale, 255, lineType)
+        cv2.imshow("_", frame_tmp)
 
         return (frame_tmp)
 
